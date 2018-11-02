@@ -1,0 +1,279 @@
+﻿Build started 12/1/2017 3:59:14 PM.
+     1>Project "D:\Yiming\code\VS2010 Project\git project\GPUmleFit_LM_Unite\CPUmleFit_LM\CPUmleFit_LM.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\x86_amd64\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /GL /D _WINDLL /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Release\\" /Fd"x64\Release\vc100.pdb" /Gd /TP /errorReport:prompt CPUmleFit_LM.cpp
+         CPUmleFit_LM.cpp
+     1>CPUmleFit_LM.cpp(65): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(65): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(65): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(65): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(65): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(65): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(65): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(65): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(69): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(69): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(92): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(93): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(174): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(180): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(181): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(182): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(183): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(184): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(185): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(225): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(284): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(284): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(284): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(284): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(284): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(284): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(284): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(284): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(284): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(284): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(288): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(288): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(311): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(312): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(394): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(400): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(401): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(402): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(403): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(404): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(405): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(406): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(446): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(515): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(515): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(515): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(515): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(515): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(515): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(515): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(515): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(515): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(515): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(519): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(519): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(543): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(544): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(625): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(632): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(633): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(634): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(635): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(636): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(637): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(676): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(735): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(735): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(735): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(735): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(735): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(735): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(735): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(735): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(735): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(735): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(735): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(735): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(739): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(739): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(763): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(764): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(846): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(852): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(853): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(854): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(855): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(856): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(857): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(896): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(962): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(962): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(962): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(962): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(962): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(962): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(962): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(962): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(962): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(962): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(966): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(966): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(993): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(1008): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(1009): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(1011): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(1013): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>CPUmleFit_LM.cpp(1016): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>CPUmleFit_LM.cpp(1020): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>CPUmleFit_LM.cpp(1029): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>CPUmleFit_LM.cpp(1029): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>CPUmleFit_LM.cpp(1112): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(1113): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(1115): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>CPUmleFit_LM.cpp(1118): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>CPUmleFit_LM.cpp(1122): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>CPUmleFit_LM.cpp(1131): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>CPUmleFit_LM.cpp(1131): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>CPUmleFit_LM.cpp(1162): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(1167): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(1168): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(1170): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>CPUmleFit_LM.cpp(1173): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>CPUmleFit_LM.cpp(1177): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>CPUmleFit_LM.cpp(1183): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>CPUmleFit_LM.cpp(1183): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>CPUmleFit_LM.cpp(1240): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1240): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1240): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1240): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1240): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1240): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1240): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1240): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1244): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1244): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1268): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(1269): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(1351): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(1357): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(1358): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(1359): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(1360): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(1361): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(1362): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(1403): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(1463): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1463): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1463): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1463): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1463): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1463): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1463): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1463): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1463): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1463): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1467): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1467): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1491): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(1492): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(1576): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(1582): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(1583): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(1584): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(1585): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(1586): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(1587): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(1588): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(1628): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(1698): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1698): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1698): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1698): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1698): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1698): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1698): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1698): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1698): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1698): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1702): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1702): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1725): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(1726): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(1807): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(1813): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(1814): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(1815): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(1816): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(1817): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(1818): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(1859): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(1920): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1920): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1920): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1920): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1920): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1920): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1920): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1920): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1920): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1920): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1920): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1920): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1924): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1924): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(1948): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(1949): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(2032): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(2038): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(2039): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(2040): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(2041): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(2042): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(2043): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(2084): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(2149): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(2149): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(2149): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(2149): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(2149): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(2149): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(2149): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(2149): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(2149): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(2149): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(2153): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(2153): warning C4305: 'initializing' : truncation from 'double' to 'float'
+     1>CPUmleFit_LM.cpp(2182): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(2197): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(2198): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(2200): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(2202): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>CPUmleFit_LM.cpp(2205): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>CPUmleFit_LM.cpp(2209): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>CPUmleFit_LM.cpp(2218): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>CPUmleFit_LM.cpp(2218): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>CPUmleFit_LM.cpp(2285): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(2291): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(2292): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(2293): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(2294): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(2295): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(2296): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(2297): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(2301): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(2302): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(2304): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>CPUmleFit_LM.cpp(2307): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>CPUmleFit_LM.cpp(2310): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>CPUmleFit_LM.cpp(2319): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>CPUmleFit_LM.cpp(2319): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>CPUmleFit_LM.cpp(2355): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(2360): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(2361): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>CPUmleFit_LM.cpp(2365): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>CPUmleFit_LM.cpp(2368): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>CPUmleFit_LM.cpp(2372): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+     1>CPUmleFit_LM.cpp(2378): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>CPUmleFit_LM.cpp(2378): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"D:\Yiming\code\VS2010 Project\git project\GPUmleFit_LM_Unite\x64\Release\CPUmleFit_LM.mexw64" /NOLOGO libmex.lib libmat.lib libmx.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /DEF:"matlab.def" /MANIFEST /ManifestFile:"x64\Release\CPUmleFit_LM.mexw64.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"D:\Yiming\code\VS2010 Project\git project\GPUmleFit_LM_Unite\x64\Release\CPUmleFit_LM.pdb" /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\Yiming\code\VS2010 Project\git project\GPUmleFit_LM_Unite\x64\Release\CPUmleFit_LM.lib" /MACHINE:X64 /DLL x64\Release\CPUgaussLib.obj
+         x64\Release\CPUmleFit_LM.obj
+         x64\Release\CPUsplineLib.obj
+         x64\Release\mexFunction.obj
+            Creating library D:\Yiming\code\VS2010 Project\git project\GPUmleFit_LM_Unite\x64\Release\CPUmleFit_LM.lib and object D:\Yiming\code\VS2010 Project\git project\GPUmleFit_LM_Unite\x64\Release\CPUmleFit_LM.exp
+         Generating code
+         Finished generating code
+         CPUmleFit_LM.vcxproj -> D:\Yiming\code\VS2010 Project\git project\GPUmleFit_LM_Unite\x64\Release\CPUmleFit_LM.mexw64
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"D:\Yiming\code\VS2010 Project\git project\GPUmleFit_LM_Unite\x64\Release\CPUmleFit_LM.mexw64;#2" /manifest x64\Release\CPUmleFit_LM.mexw64.intermediate.manifest
+     1>Done Building Project "D:\Yiming\code\VS2010 Project\git project\GPUmleFit_LM_Unite\CPUmleFit_LM\CPUmleFit_LM.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:04.15
