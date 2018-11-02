@@ -22,7 +22,7 @@ The CPU version runs on macOS and Microsoft Windows 7 or newer, 64-bit
   
 # How to run
 Example code is avalible in file **example_3D_fit.m**. The required 3D image stacks for
-the demo code can be found in the folder **data**. A full instruction guide can be found 
+the demo code can be found in the folder by following [this link](https://oc.embl.de/index.php/s/SOIYyv5WTe5EbbO). A full instruction guide can be found 
 in **User_guide_Ries.pdf**.
 
 # Contact
