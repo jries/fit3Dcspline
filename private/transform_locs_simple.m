@@ -61,8 +61,8 @@ end
             separators(1)=separator;
         case '2 cam'
             %p.Tsplitpos is now the initial scaling factor
-            loctT.x=loctarget.x(:)*p.Tsplitpos-min(loctarget.x(:))+10;
-            loctT.y=loctarget.y(:)*p.Tsplitpos-min(loctarget.y(:))+10;
+            loctT.x=loctarget.x(:)*p.Tsplitpos(1)-min(loctarget.x(:))+10;
+            loctT.y=loctarget.y(:)*p.Tsplitpos(end)-min(loctarget.y(:))+10;
             locrT.x=locref.x(:)-min(locref.x(:))+10;
             locrT.y=locref.y(:)-min(locref.y(:))+10;
             separator=max(vertcat(loctT.x(:),loctT.y(:),locrT.x(:),locrT.y(:)))/2;
