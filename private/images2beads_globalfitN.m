@@ -102,6 +102,8 @@ for k=1:length(filelist)
             maxima=maxima(indm,:);
         end
     end
+    
+    maximafound=maxima;
     indgoodb=true(size(maxima,1),1);
     %remove beads that are closer together than mindistance
     if isfield(p,'mindistance')&&~isempty(p.mindistance)
@@ -213,10 +215,10 @@ for k=1:length(filelist)
      hold (ax,'on')
     if p.isglobalfit
         for ch=1:size(maximaall,3)
-            plot(ax,maximaall(:,1,ch),maximaall(:,2,ch),'ko') 
+            plot(ax,maximaall(:,1,ch),maximaall(:,2,ch),'ko',maximafound(:,1),maximafound(:,2),'r.') 
         end
     else
-        plot(ax,maxima(:,1),maxima(:,2),'ko')
+        plot(ax,maxima(:,1),maxima(:,2),'ko',maximafound(:,1),maximafound(:,2),'r.')
     end
     hold (ax,'off')
     drawnow

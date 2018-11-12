@@ -70,14 +70,50 @@ out.transformation=ph.transformation;
 fitroi=13;
 sim=size(allPSFs);
 mp=floor((sim(1)-1)/2)+1;
+mpz=floor((sim(3)-1)/2)+1;
 droi=floor((fitroi-1)/2);
 ph.rangeh=mp-droi:mp+droi;
 ph.phi0=phaseshifts;
 
+%plot PSF
+plotI(:,:,:,1)=PSF.I/globalnorm;plotI(:,:,:,2)=PSF.A/globalnorm;plotI(:,:,:,3)=PSF.B/globalnorm;plotI(:,:,:,4)=PSF.PSF(:,:,:,1)/globalnorm;
+plotI(:,:,:,5)=allPSFs(:,:,:,1)/globalnorm;
+tab=(uitab(tgprefit,'Title','IAB'));imageslicer(plotI,'Parent',tab)
+
+for k=1:4
+plotR(:,:,:,k)=(allPSFs(:,:,:,k)-PSF.PSF(:,:,:,k))/globalnorm;
+end
+plotR(:,:,1,:)=[];plotR(:,:,end,:)=[];
+tab=(uitab(tgprefit,'Title','residuals'));
+tgres=uitabgroup(tab);
+tabres=(uitab(tgres,'Title','residuals all'));
+imageslicer(plotR,'Parent',tabres)
+    
+%residuals for all beads in shiftedstack
+%try for bead 1
+rxy=ph.rangeh;rz=mpz-floor(p.zcorrframes/2):mpz+floor(p.zcorrframes/2);
+
+for bead=1:size(shiftedstack{1},4)
+    for ch=1:4
+        ratiod(:,:,:,ch)=shiftedstack{ch}(rxy,rxy,rz,bead)./PSF.PSF(rxy,rxy,rz,ch);
+        int1=shiftedstack{ch}(rxy,rxy,rz,bead);int2=PSF.PSF(rxy,rxy,rz,ch);
+         ratio(ch)=int1(:)\int2(:);
+    end
+    normhd=median(ratiod(:),'omitnan');
+    normh=1/mean(ratio);
+    resh=[];
+    for ch=1:4
+        resh=vertcat(resh,shiftedstack{ch}(:,:,:,bead)-normh*PSF.PSF(:,:,:,ch));
+        ressmallh=shiftedstack{ch}(rxy,rxy,rz,bead)-normh*PSF.PSF(rxy,rxy,rz,ch);
+        ressum(bead,ch)=sqrt(sum(ressmallh(:).^2,'omitnan'))/globalnorm;
+    end
+    residuals(:,:,:,bead)=resh;
+end
+tab=(uitab(tgres,'Title','res beads'));imageslicer(residuals,'Parent',tab)
+tab=(uitab(tgres,'Title','ressum'));ax=axes(tab);plot(ax,ressum);
+
  p.status.String=['Validate by fitting'];drawnow
 img=validatemodel(PSF,ph,'fit');
-    plotI(:,:,:,1)=PSF.I;plotI(:,:,:,2)=PSF.A;plotI(:,:,:,3)=PSF.B;plotI(:,:,:,4)=PSF.PSF(:,:,:,1);
-    tab=(uitab(tgprefit,'Title','IAB'));imageslicer(plotI,'Parent',tab)
 %fit calibrations stack
 % shared=[0,0,1,1,1,1];
 % z0=ph.zstart;
@@ -734,5 +770,8 @@ ylabel(ax,'x')
 ax=axes(uitab(tgr,'Title','LL'));
 
 histogram(ax,LL/sim(1)^2)
-title(median(LL)/sim(1)^2)
+title(ax,median(LL)/sim(1)^2)
+
+% calculate residuals for each bead. Should it beased on average x,y,z in center?
+
 end
