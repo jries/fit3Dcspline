@@ -51,6 +51,7 @@ for k=1:length(filelist)
         end
         if isfield(p,'settings_3D') && ~isempty(p.settings_3D) %calibration file: cut out and mirror already here!
             imstack=cutoutchannels(imstack,p.settings_3D);
+            imstack2=cutoutchannels(imstack2,p.settings_3D);
             p.roi{k}=[0 0 size(imstack,1) size(imstack,2)]; %check x,y
         else
             disp('no  settings_3D found. Use default. Specify settings file?')
