@@ -83,6 +83,9 @@ p.status.String='Load files and segment beads';drawnow
 if ~isfield(p,'tabgroup')
     f=figure('Name','Bead calibration');
     p.tabgroup=uitabgroup(f);
+    calibrationfigure=f;
+else
+    f=p.tabgroup.Parent;
 end
 %get beads from images
 % if isfield(p,'isglobalfit')&&p.isglobalfit
@@ -279,6 +282,7 @@ end
 parameters=myrmfield(p,{'tabgroup','status','ax_z','ax_sxsy','fileax'});
     
 p.status.String='save calibration';drawnow
+
 if ~isempty(p.outputfile)
     if p.smap
         parameters.smappos.P=[];
@@ -286,6 +290,8 @@ if ~isempty(p.outputfile)
     else
         save(p.outputfile,'gausscal','cspline_all','gauss_sx2_sy2','gauss_zfit','cspline','parameters');
     end
+    filefig=strrep(p.outputfile,'.mat','.fig');
+    savefig(calibrationfigure,filefig,'compact');
 end
 p.status.String='Calibration done';drawnow
 end
