@@ -87,11 +87,14 @@ for k=1:length(filelist)
             mim=double(mim).*double(p.roimask);
         end
         maxima=maximumfindcall(mim);
+        indgh=maxima(:,1)>p.xrange(1) & maxima(:,1)<p.xrange(2) & maxima(:,2)>p.yrange(1) & maxima(:,2)<p.yrange(2); 
         %XXXXXXXXXXX
 %         maxima(:,1)=(maxima(:,1)+2*round(rand(size(maxima,1),1)))-1; % for testing if positions match
         int=maxima(:,3);
         try
-        mimc=mim(roisize:end-roisize,roisize:end-roisize);
+        r1=max(roisize,p.yrange(1)):min(size(mim,1)-roisize,p.yrange(2));
+        r2=max(roisize,p.xrange(1)):min(size(mim,2)-roisize,p.xrange(2));
+        mimc=mim(r1,r2);
         mmed=myquantile(mimc(:),0.3);
         imt=mimc(mimc<=mmed);
             sm=sort(int);
@@ -103,7 +106,7 @@ for k=1:length(filelist)
         end
         cutoff=cutoff*p.cutoffrel;
         if any(int>cutoff)
-            maxima=maxima(int>cutoff,:);
+            maxima=maxima(int>cutoff & indgh,:);
         else
             [~,indm]=max(int);
             maxima=maxima(indm,:);
