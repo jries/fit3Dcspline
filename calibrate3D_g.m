@@ -85,7 +85,7 @@ if ~isfield(p,'tabgroup')
     p.tabgroup=uitabgroup(f);
     calibrationfigure=f;
 else
-    f=p.tabgroup.Parent;
+    calibrationfigure=p.tabgroup.Parent;
 end
 %get beads from images
 % if isfield(p,'isglobalfit')&&p.isglobalfit
