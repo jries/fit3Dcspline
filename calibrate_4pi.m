@@ -28,7 +28,9 @@ ph.zstart= [-1 0 1]*30;
 [beads,ph]=images2beads_globalfit(ph); %later extend for transformN, dont use two versions of images2beads 
  p.status.String=['register beads in x,y,z'];drawnow
 %register beads channel wise
-[allPSFs,shiftedstack,corrout]=PSFcorrelation(beads,ph);
+filenumbers=[beads(:).filenumber];
+infile=filenumbers==1;
+[allPSFs,shiftedstack,corrout]=PSFcorrelation(beads(infile),ph);
 
 %get frequency and phases
 tab=(uitab(tgprefit,'Title','frequency'));ph.ax=axes(tab);
@@ -64,7 +66,6 @@ end
 ph.transformation=make4PiTransform(corrout.beadtrue,ph);
 out.transformation=ph.transformation;
 
-
 %now: validation and plotting of graphs
 %do fitting for testing
 fitroi=13;
@@ -74,6 +75,8 @@ mpz=floor((sim(3)-1)/2)+1;
 droi=floor((fitroi-1)/2);
 ph.rangeh=mp-droi:mp+droi;
 ph.phi0=phaseshifts;
+
+
 
 %plot PSF
 plotI(:,:,:,1)=PSF.I/globalnorm;plotI(:,:,:,2)=PSF.A/globalnorm;plotI(:,:,:,3)=PSF.B/globalnorm;plotI(:,:,:,4)=PSF.PSF(:,:,:,1)/globalnorm;
@@ -189,7 +192,117 @@ if ~isempty(p.outputfile)
 end
 
  p.status.String=['Calibration done.'];drawnow
-return
+ 
+ 
+ 
+ 
+
+
+% 
+% % OOOOOOOO now testing global fit of all beads
+% ph.isglobalfit=true;
+% [beads,ph]=images2beads_globalfitN(ph); %get global bead stacks
+% [imstack,fn,dxy]=bead2stack(beads);
+% PSF.globalnorm=globalnorm;
+% 
+% out=IABfrom4PiPSFfitmany(imstack, phaseshifts(2),ph.frequency,9,30,PSF);
+
+% OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO 
+% now testing iterative fitting and alignemnt of beads with
+% averaging IABs
+ph.isglobalfit=true;
+[beads,ph]=images2beads_globalfitN(ph); %get global bead stacks
+[imstack,fn,dxy]=bead2stack(beads);
+
+img.imstack=imstack;
+sim=size(imstack);
+imsqueeze=reshape(imstack,sim(1),sim(2),[],sim(end));
+iterations=5
+% it seems that with every iteration it gets worse (x,y registration etc)
+for iter=1:iterations
+% for k=2:size(imsqueeze,4)
+%     imsqueeze(:,:,:,k)=imsqueeze(:,:,:,k)/PSF.normf(k);
+% end
+
+dTAll=reshape(dxy,size(dxy,1),sim(end),[]);
+img.dTAll=dTAll;
+shared=[0,0,0,1,1,1];
+imstacksq=imsqueeze(ph.rangeh, ph.rangeh, :, :);
+iterations=50;
+z0=ph.zstart;
+[P,CRLB1 LL] = mleFit_LM_4Pi(single(imstacksq(:, :, :, :)),uint32(shared),iterations,single(PSF.Ispline), single(PSF.Aspline),single(PSF.Bspline),single(dTAll),single(ph.phi0),z0);
+
+% [P,CRLB1 LL] = CPUmleFit_LM_MultiChannel_4pi(single(imstacksq(:, :, :, :)),uint32(shared),iterations,single(PSF.Ispline), single(PSF.Aspline),single(PSF.Bspline),single(dTAll),single(ph.phi0),z0);
+
+ P=double(P);CRLB1=double(CRLB1);
+%collect fitted parameters
+
+for k=1:size(CRLB1,2)
+    Pr(:,k,:)=reshape(P(:,k),[],img.sim(4));
+    Cr(:,k,:)=reshape(CRLB1(:,k),[],img.sim(4));
+end
+Pr(:,k+1,:)=reshape(P(:,k+1),[],img.sim(4)); %iterations, not in crlb
+
+
+xfit=Pr(:,1:4,:);dx=Cr(:,1:4,:);
+yfit=Pr(:,5:8,:);dy=Cr(:,5:8,:);
+Nfit=(Pr(:,9:12,:));
+Bg=(Pr(:,13,:));
+phase=mod(Pr(:,15,:),2*pi);
+zastigf=squeeze(Pr(:,14,:));
+%determine average positions in small window
+zwindow=5; %+/- zwin
+zrange=mpz-zwindow:mpz+zwindow;
+numbeads=sim(4);
+
+
+xn=1:size(img.imstack,1);yn=1:size(img.imstack,2);zn=1:size(img.imstack,3);
+[Xq,Yq,Zq]=meshgrid(yn,xn,zn);
+
+imstackaligned=imstack*0;
+for k=numbeads:-1:1
+    phasem(k)=cyclicaverage(phase(zrange,k),2*pi);
+    zastigh=zastigf(zrange,k)-mpz;
+    Xmat=horzcat(zastigh(:), zastigh(:)*0+1);
+    linfit=Xmat\(zrange(:)-mpz);
+    z0(k)=linfit(2);
+%     x0(k,:)=squeeze(robustMean(xfit(zrange,k,:),1))-droi+1;
+%     y0(k,:)=squeeze(robustMean(yfit(zrange,k,:),1))-droi+1;   
+    x0(k,:)=squeeze(sum(xfit(zrange,:,k)./dx(zrange,:,k),1)./sum(1./dx(zrange,:,k),1))-droi+1;
+    y0(k,:)=squeeze(sum(yfit(zrange,:,k)./dy(zrange,:,k),1)./sum(1./dy(zrange,:,k),1))-droi+1;
+    
+    Nhere(k,:)=squeeze(mean(Nfit(zrange,:,k),1));
+    for c=1:size(img.imstack,5)
+        imh=squeeze(imstack(:,:,:,k,c));
+        xshift=-y0(k,c); %works empirically
+        yshift=-x0(k,c);
+        zshift=0; %shift IAB in z only
+%         zshift=-z0(k);
+        shiftedh=interp3(imh(:,:,:),Xq-xshift,Yq-yshift,Zq-zshift,'cubic',0);
+        imstackaligned(:,:,:,k,c)=shiftedh;
+    end
+    [I,A,B]=make4Pimodel(squeeze(imstackaligned(:,:,:,k,:)),phaseshifts+phasem(k),ph.frequency,1./Nhere(k,:));
+%        [I,A,B]=make4Pimodel(squeeze(imstackaligned(:,:,:,k,:)),phaseshifts+phasem(k),ph.frequency,PSF.normf);
+    Is=interp3(I,Xq,Yq,Zq+z0(k),'cubic',0);
+    As=interp3(A,Xq,Yq,Zq+z0(k),'cubic',0);
+    Bs=interp3(B,Xq,Yq,Zq+z0(k),'cubic',0);
+    
+    Aa(:,:,:,k,:)=As;
+    Ba(:,:,:,k,:)=Bs;
+    Ia(:,:,:,k,:)=Is;
+end
+Am=squeeze(mean(Aa,4));
+Bm=squeeze(mean(Ba,4));
+Im=squeeze(mean(Ia,4));
+
+% PSF=IABfrom4PiPSFfit(squeeze(sum(imstackaligned(:,:,:,:,:),4)), phaseshifts(2),ph.frequency,9,25,[0 0 0 0]);
+[out,globalnorm2]=makeIABspline(Im,Am,Bm,ph);
+PSFiter=copyfields(PSF,out);
+img=validatemodel(PSFiter,ph,['fit' num2str(iter)]);
+PSF=PSFiter;
+
+end
+% OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 
 
 
@@ -469,28 +582,28 @@ into=zint(f,k,phi,A1,A2,A3,B1,B2,B3,fitAB);
 % into=Bg+Am.*os;
 end
 
-function [I,A,B,PSF]=make4Pimodel(allPSFs,phaseshifts,frequency,p)
-%re-weight every PSF by relative transmission?
-    I1=(allPSFs(:,:,:,1)+allPSFs(:,:,:,3))/2;
-    I2=(allPSFs(:,:,:,2)+allPSFs(:,:,:,4))/2;
-    Iall=(I1+I2)/2;
-    
-    z=(1:size(allPSFs,3))'-round(size(allPSFs,3)/2);
-[A12,B12]=makeAB(allPSFs(:,:,:,1),allPSFs(:,:,:,2),Iall,z,frequency,phaseshifts(1),phaseshifts(2));
-[A41,B41]=makeAB(allPSFs(:,:,:,4),allPSFs(:,:,:,1),Iall,z,frequency,phaseshifts(4),phaseshifts(1));
-[A23,B23]=makeAB(allPSFs(:,:,:,2),allPSFs(:,:,:,3),Iall,z,frequency,phaseshifts(2),phaseshifts(3));
-[A34,B34]=makeAB(allPSFs(:,:,:,3),allPSFs(:,:,:,4),Iall,z,frequency,phaseshifts(3),phaseshifts(4));
-A=(A12+A23+A34+A41)/4;
-B=(B12+B23+B34+B41)/4;
-I=Iall;
-
-if nargin>3
-PSF=makeIABspline(I,A,B,p);
-PSF.frequency=frequency;
-PSF.phaseshifts=phaseshifts;
-end
-
-end
+% function [I,A,B,PSF]=make4Pimodel(allPSFs,phaseshifts,frequency,p)
+% %re-weight every PSF by relative transmission?
+%     I1=(allPSFs(:,:,:,1)+allPSFs(:,:,:,3))/2;
+%     I2=(allPSFs(:,:,:,2)+allPSFs(:,:,:,4))/2;
+%     Iall=(I1+I2)/2;
+%     
+%     z=(1:size(allPSFs,3))'-round(size(allPSFs,3)/2);
+% [A12,B12]=makeAB(allPSFs(:,:,:,1),allPSFs(:,:,:,2),Iall,z,frequency,phaseshifts(1),phaseshifts(2));
+% [A41,B41]=makeAB(allPSFs(:,:,:,4),allPSFs(:,:,:,1),Iall,z,frequency,phaseshifts(4),phaseshifts(1));
+% [A23,B23]=makeAB(allPSFs(:,:,:,2),allPSFs(:,:,:,3),Iall,z,frequency,phaseshifts(2),phaseshifts(3));
+% [A34,B34]=makeAB(allPSFs(:,:,:,3),allPSFs(:,:,:,4),Iall,z,frequency,phaseshifts(3),phaseshifts(4));
+% A=(A12+A23+A34+A41)/4;
+% B=(B12+B23+B34+B41)/4;
+% I=Iall;
+% 
+% if nargin>3
+% PSF=makeIABspline(I,A,B,p);
+% PSF.frequency=frequency;
+% PSF.phaseshifts=phaseshifts;
+% end
+% 
+% end
 function [out,normf]=makeIABspline(I,A,B,p)
 
 % normalize to central frames of I in 5 x 5 region
@@ -692,10 +805,11 @@ end
 
 
 
-function img=validatemodel(PSF,ph,titlet)
+function [img,beads]=validatemodel(PSF,ph,titlet)
 if nargin<3
     titlet='results';
 end
+Nfree=false;
 ph.isglobalfit=true;
 
 [beads,ph]=images2beads_globalfitN(ph); 
@@ -713,7 +827,17 @@ end
 
 dTAll=reshape(dxy,size(dxy,1),sim(end),[]);
 img.dTAll=dTAll;
-shared=[1,1,1,1,1,1];
+if Nfree
+    shared=[1,1,0,1,1,1];
+    indN=3:6;
+    indz=8;
+    indp=9;
+else
+    shared=[1,1,1,1,1,1];
+    indN=3;
+    indz=5;
+    indp=6;
+end
 imstacksq=imsqueeze(ph.rangeh, ph.rangeh, :, :);
 iterations=50;
 z0=ph.zstart;
@@ -729,13 +853,13 @@ img.sim=sim;
 % dx21=Pu(:,2)-Pu(:,1);
  
 %collect fitted parameters
-phase=mod(reshape(P(:,6),[],sim(4)),2*pi);
+phase=mod(reshape(P(:,indp),[],sim(4)),2*pi);
 zphase=phase/2/PSF.frequency*ph.dz;
-zastig=reshape(P(:,5),[],sim(4))*ph.dz;
+zastig=reshape(P(:,indz),[],sim(4))*ph.dz;
 xfit=reshape(P(:,1),[],sim(4));
 yfit=reshape(P(:,2),[],sim(4));
 %XXXX find z0!
-z_phi = reshape(z_from_phi_JR(P(:, 5), phase(:), PSF.frequency, ceil(sim(3)/2)-.7),[],sim(4))*ph.dz;
+z_phi = reshape(z_from_phi_JR(P(:, indz), phase(:), PSF.frequency, ceil(sim(3)/2)-.7),[],sim(4))*ph.dz;
 
 %plot results of validation
 tab=(uitab(ph.tabgroup,'Title',['r_' titlet]));
