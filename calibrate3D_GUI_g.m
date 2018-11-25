@@ -221,6 +221,7 @@ classdef calibrate3D_GUI_g<handle
             obj.guihandles.filelist.String=sf.filelist;
             obj.guihandles.filelist.Value=1;
 %             if isempty(obj.guihandles.outputfile.String)|| strcmp(obj.guihandles.outputfile.String,'bead_3dcal.mat')
+            %determine name for output file
                 ind=strfind(sf.filelist{1},';');
                 if ~isempty(ind)
                     fileh=sf.filelist{1}(1:ind-1);
@@ -228,8 +229,26 @@ classdef calibrate3D_GUI_g<handle
                     fileh=sf.filelist{1};
                 end
                 [path,file]=fileparts(fileh);
+                if length(sf.filelist)>1
+                    fileh2=sf.filelist{2};
+                    path2=fileparts(fileh2);
+                    if ~strcmp(path,path2) %not the same: look two hierarchies down
+                        if strcmp(fileparts(path),fileparts(path2))
+                            path=fileparts(path);
+                        elseif strcmp(fileparts(fileparts(path)),fileparts(fileparts(path2)))
+                            path=fileparts(fileparts(path));
+                        end
+                    end
+                end
                 obj.guihandles.outputfile.String=[path filesep file '_3dcal.mat'];
-                
+                try
+                    r=imageloaderAll(fileh,[],obj.smappos.P);
+                    mirror=r.metadata.EMon;
+                    obj.guihandles.emgain.Value=mirror;
+                catch err
+                    disp('EM mirror could not be defined automatically, set manually')
+                end
+                    
 %             end
         end
         function selectoutputfile_callback(obj,a,b)

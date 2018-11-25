@@ -59,10 +59,10 @@ for k=1:length(filelist)
             p.settings_3D=struct('y4pi',[0 0 0 0],'x4pi',[0 wx 2*wx 3*wx], 'width4pi',wx,'height4pi',wy,'mirror4pi',[0 0 0 0],'pixelsize_nm',100,'offset',100,'conversion',0.5);
         end
     end
-    
-    if p.emgain
-        imstack=imstack(:,end:-1:1,:);
-    end
+   % em mirror goes to readbeadimages, also to take care of the roi 
+%     if p.emgain
+%         imstack=imstack(:,end:-1:1,:);
+%     end
        
     if isfield(p,'framerangeuse')
         imstack=imstack(:,:,p.framerangeuse(1):p.framerangeuse(end));
