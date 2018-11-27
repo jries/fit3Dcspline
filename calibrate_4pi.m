@@ -116,7 +116,7 @@ tab=(uitab(tgres,'Title','res beads'));imageslicer(residuals,'Parent',tab)
 tab=(uitab(tgres,'Title','ressum'));ax=axes(tab);plot(ax,ressum);
 
  p.status.String=['Validate by fitting'];drawnow
-img=validatemodel(PSF,ph,'fit');
+valfit=validatemodel(PSF,ph,'fit');
 %fit calibrations stack
 % shared=[0,0,1,1,1,1];
 % z0=ph.zstart;
@@ -195,17 +195,21 @@ end
  
  
  
- 
-
 
 % 
 % % OOOOOOOO now testing global fit of all beads
+
+% pass on start parameters (e.g. previous fit parameters from validation)
+% optimize also for internal consistency
+% try with global norm
+% 
 % ph.isglobalfit=true;
 % [beads,ph]=images2beads_globalfitN(ph); %get global bead stacks
 % [imstack,fn,dxy]=bead2stack(beads);
 % PSF.globalnorm=globalnorm;
-% 
-% out=IABfrom4PiPSFfitmany(imstack, phaseshifts(2),ph.frequency,9,30,PSF);
+
+startp=averagefit4Pi(valfit);
+out=IABfrom4PiPSFfitmany(valfit,startp, phaseshifts(2),ph.frequency,9,30);
 
 % OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO 
 % now testing iterative fitting and alignemnt of beads with
@@ -214,7 +218,7 @@ ph.isglobalfit=true;
 [beads,ph]=images2beads_globalfitN(ph); %get global bead stacks
 [imstack,fn,dxy]=bead2stack(beads);
 
-img.imstack=imstack;
+valfit.imstack=imstack;
 sim=size(imstack);
 imsqueeze=reshape(imstack,sim(1),sim(2),[],sim(end));
 iterations=5
@@ -225,7 +229,7 @@ for iter=1:iterations
 % end
 
 dTAll=reshape(dxy,size(dxy,1),sim(end),[]);
-img.dTAll=dTAll;
+valfit.dTAll=dTAll;
 shared=[0,0,0,1,1,1];
 imstacksq=imsqueeze(ph.rangeh, ph.rangeh, :, :);
 iterations=50;
@@ -238,10 +242,10 @@ z0=ph.zstart;
 %collect fitted parameters
 
 for k=1:size(CRLB1,2)
-    Pr(:,k,:)=reshape(P(:,k),[],img.sim(4));
-    Cr(:,k,:)=reshape(CRLB1(:,k),[],img.sim(4));
+    Pr(:,k,:)=reshape(P(:,k),[],valfit.sim(4));
+    Cr(:,k,:)=reshape(CRLB1(:,k),[],valfit.sim(4));
 end
-Pr(:,k+1,:)=reshape(P(:,k+1),[],img.sim(4)); %iterations, not in crlb
+Pr(:,k+1,:)=reshape(P(:,k+1),[],valfit.sim(4)); %iterations, not in crlb
 
 
 xfit=Pr(:,1:4,:);dx=Cr(:,1:4,:);
@@ -256,7 +260,7 @@ zrange=mpz-zwindow:mpz+zwindow;
 numbeads=sim(4);
 
 
-xn=1:size(img.imstack,1);yn=1:size(img.imstack,2);zn=1:size(img.imstack,3);
+xn=1:size(valfit.imstack,1);yn=1:size(valfit.imstack,2);zn=1:size(valfit.imstack,3);
 [Xq,Yq,Zq]=meshgrid(yn,xn,zn);
 
 imstackaligned=imstack*0;
@@ -272,7 +276,7 @@ for k=numbeads:-1:1
     y0(k,:)=squeeze(sum(yfit(zrange,:,k)./dy(zrange,:,k),1)./sum(1./dy(zrange,:,k),1))-droi+1;
     
     Nhere(k,:)=squeeze(mean(Nfit(zrange,:,k),1));
-    for c=1:size(img.imstack,5)
+    for c=1:size(valfit.imstack,5)
         imh=squeeze(imstack(:,:,:,k,c));
         xshift=-y0(k,c); %works empirically
         yshift=-x0(k,c);
@@ -298,7 +302,7 @@ Im=squeeze(mean(Ia,4));
 % PSF=IABfrom4PiPSFfit(squeeze(sum(imstackaligned(:,:,:,:,:),4)), phaseshifts(2),ph.frequency,9,25,[0 0 0 0]);
 [out,globalnorm2]=makeIABspline(Im,Am,Bm,ph);
 PSFiter=copyfields(PSF,out);
-img=validatemodel(PSFiter,ph,['fit' num2str(iter)]);
+valfit=validatemodel(PSFiter,ph,['fit' num2str(iter)]);
 PSF=PSFiter;
 
 end
@@ -314,15 +318,15 @@ shared=[0 0 1 1 1 1]; %only link BG and photons to get true x,y
 % negelct here
 %now fit with dT=0 to get directly the shift (avoid adding shifts)
 
-dTAll0=img.dTAll*0;
-[Pu,CRLB1 LL] = mleFit_LM_4Pi(single(img.imstacksq(:, :, :, :)),uint32(shared),iterations,single(PSF.Ispline), single(PSF.Aspline),single(PSF.Bspline),single(dTAll0),single(ph.phi0),z0);
+dTAll0=valfit.dTAll*0;
+[Pu,CRLB1 LL] = mleFit_LM_4Pi(single(valfit.imstacksq(:, :, :, :)),uint32(shared),iterations,single(PSF.Ispline), single(PSF.Aspline),single(PSF.Bspline),single(dTAll0),single(ph.phi0),z0);
 
 
 for k=1:size(CRLB1,2)
-    Pr(:,k,:)=reshape(Pu(:,k),[],img.sim(4));
-    Cr(:,k,:)=reshape(CRLB1(:,k),[],img.sim(4));
+    Pr(:,k,:)=reshape(Pu(:,k),[],valfit.sim(4));
+    Cr(:,k,:)=reshape(CRLB1(:,k),[],valfit.sim(4));
 end
-Pr(:,k+1,:)=reshape(Pu(:,k+1),[],img.sim(4)); %iterations, not in crlb
+Pr(:,k+1,:)=reshape(Pu(:,k+1),[],valfit.sim(4)); %iterations, not in crlb
 % Pr=reshape(Pu,[],size(Pu,2),sim(4));
 df=20;
 frange=ceil((sim(3)-1)/2+1)+ (-df:df)';
@@ -363,11 +367,11 @@ zpwm=squeeze(sum(z_phase./dphase,1)./sum(1./dphase,1));
 %not flat (imperfect alignment) across FoV then z would stay constant and
 %phase would change. 
 
-xn=1:size(img.imstack,1);yn=1:size(img.imstack,2);zn=1:size(img.imstack,3);
+xn=1:size(valfit.imstack,1);yn=1:size(valfit.imstack,2);zn=1:size(valfit.imstack,3);
 [Xq,Yq,Zq]=meshgrid(yn,xn,zn);
 
-imstackaligned=img.imstack*0;
-imstackalignedp=img.imstack*0;
+imstackaligned=valfit.imstack*0;
+imstackalignedp=valfit.imstack*0;
 %try also to align by phase
 % AB, then average: zastig
 %average then AB: zphase
@@ -375,9 +379,9 @@ imstackalignedp=img.imstack*0;
 % shift all images according to dT from fit
 %imstackaligned: all beads, shifted by this, using average z_astig
 %imstackalignedp: using z_phase
-for k=1:size(img.imstack,4) %for all beads
-    for c=1:size(img.imstack,5)
-        imh=squeeze(img.imstack(:,:,:,k,c));
+for k=1:size(valfit.imstack,4) %for all beads
+    for c=1:size(valfit.imstack,5)
+        imh=squeeze(valfit.imstack(:,:,:,k,c));
         xshift=-ywm(c,k); %works empirically
         yshift=-xwm(c,k);
         zshift=zwm(k);
@@ -847,6 +851,9 @@ z0=ph.zstart;
 
 img.imstacksq=imstacksq;
 img.sim=sim;
+img.fit.P=P;
+img.fit.CRLB=CRLB1;
+img.fit.PSF=PSF;
 %now unlink x, y to see if there is shift
 % shared(1:2)=0;
 % [Pu,CRLB1 LL] = CPUmleFit_LM_MultiChannel_4pi(single(imstacksq(:, :, :, :)),uint32(shared),iterations,single(PSF.Ispline), single(PSF.Aspline),single(PSF.Bspline),single(dTAll),single(phi0),z0);
