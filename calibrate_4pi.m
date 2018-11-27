@@ -817,7 +817,9 @@ Nfree=false;
 ph.isglobalfit=true;
 
 [beads,ph]=images2beads_globalfitN(ph); 
-   
+   %%%%%%%%%%%%%%%%%
+   beads=beads(1)
+%%%%%%%%%%
 [imstack,fn,dxy]=bead2stack(beads);
 img.imstack=imstack;
 sim=size(imstack);
