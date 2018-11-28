@@ -149,6 +149,7 @@ for b=1:numbeads
 %         dyh=dy(b)+dyp(c);
         dzh=dz(b);
         PSFS(:,:,:,b,c)=interp3(PSF(:,:,:,b,c),Xq-dxh,Yq-dyh,Zq-dzh,'cubic',0);%/normf(k-1);
+    end
         [I,A,B,Ii,Ai,Bi]=make4Pimodel(squeeze(PSFS(:,:,:,b,:)),phaseshifts+phi(b),frequency,normp*Ni(b));
         Ia(:,:,:,b)=I;
         Aa(:,:,:,b)=A;
@@ -160,7 +161,7 @@ for b=1:numbeads
             dA(:,:,:,b,k)=Aa(r1,r2,r3)-Ai(r1,r2,r3,k);
             dB(:,:,:,b,k)=Ba(r1,r2,r3)-Bi(r1,r2,r3,k);
         end
-    end
+%     end
 end
 
 % calculate IAB

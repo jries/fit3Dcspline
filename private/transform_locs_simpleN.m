@@ -1,7 +1,10 @@
 function [transform,iAa,iBa]=transform_locs_simpleN(transform,channelref,locref,channeltarget,loctarget,p)
 % locref , target: Mx2 or Mx3 array
+if isfield(p,'sepscale')
+    sepscale=p.sepscale;
+else
 sepscale=2;
-
+end
 
 
 

@@ -498,7 +498,7 @@ classdef calibrate3D_GUI_g<handle
             
 
             if strcmp(p.modality,'4Pi')
-                calibrate_4pi(p);
+                calibrate_4pi_v2(p);
             else
             
                 calibrate_globalworkflow(p);

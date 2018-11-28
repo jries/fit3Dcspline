@@ -11,7 +11,7 @@ b=[];
 ht=uitab(p.tabgroup,'Title','Files');
 tg=uitabgroup(ht);
 
-transform=p.transformation;
+% transform=p.transformation;
 
 % offset=3;
 for k=1:length(filelist)
@@ -133,6 +133,7 @@ for k=1:length(filelist)
     
   
     if p.isglobalfit
+        transform=p.transformation;
         %calculate in nm on chip (reference for transformation)
         maximapx=(maxima(:,1:2)+p.roi{k}([1 2]));
         
@@ -147,7 +148,7 @@ for k=1:length(filelist)
         %transform reference to target
 
             indref=transform.getPart(1,maximapx);
-            maximaref=maxima(indref,:);
+            maximaref=maxima(indref,1:2);
             maximaall=transform.transformToTargetAll(maximaref);
 %             [x,y]=transform.transformCoordinatesFwd(maximapx(indref,1),maximapx(indref,2));
         %     [x,y]=transform.transformCoordinatesFwd(maximanm(indref,2),maximanm(indref,1));
@@ -182,6 +183,7 @@ for k=1:length(filelist)
         maximaref=maxima;
         maximatar=maxima;
         dxy=zeros(size(maximatar));
+        maximaallr=maxima;
     end
    
     numframes=size(imstack,3);
@@ -196,11 +198,15 @@ for k=1:length(filelist)
 %         b(bind).postar=maximatar(l,1:2);
         b(bind).shiftxy=dxy(l,:,:);
         try
-            for ch=1:size(maximaallr,3)
-                b(bind).stack.image(:,:,:,ch)=imstack(b(bind).posall(2,ch)+rsr,b(bind).posall(1,ch)+rsr,:);
+            if p.isglobalfit %many channels present
+                for ch=1:size(maximaallr,3)
+                    b(bind).stack.image(:,:,:,ch)=imstack(b(bind).posall(2,ch)+rsr,b(bind).posall(1,ch)+rsr,:);
 %                 b(bind).stack.imagetar=imstack(b(bind).postar(2)+rsr,b(bind).postar(1)+rsr,:);
-                b(bind).stack.framerange=1:numframes;
+                end
+            else
+                b(bind).stack.image(:,:,:)=imstack(b(bind).posall(2)+rsr,b(bind).posall(1)+rsr,:);
             end
+            b(bind).stack.framerange=1:numframes;
             b(bind).isstack=true;
             
         catch err
