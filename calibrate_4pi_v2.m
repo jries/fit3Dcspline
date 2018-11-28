@@ -117,31 +117,17 @@ tgres=uitabgroup(tab);
 tabres=(uitab(tgres,'Title','residuals all'));
 imageslicer(plotR,'Parent',tabres)
     
-%residuals for all beads in shiftedstack
-%try for bead 1
-% rxy=ph.rangeh;rz=mpz-floor(p.zcorrframes/2):mpz+floor(p.zcorrframes/2);
+p.status.String=['Validate by fitting'];drawnow
+valfit=validatemodel4Pi(PSF,ph,'fit');
+out=averagefit4Pi(valfit,'Nf',valfit.fit.Nnotlinked);
+% get positions etc around f0: averagefit4Pi: but with extension to handle
+% free fitting paraemters x,y,N etc.
+% calculate better transformation
+% make better global PSF from all beads using
+% individual fit approach developed before or
+% fitPSFmany
 
-% for bead=1:size(shiftedstack{1},4)
-%     for ch=1:4
-%         ratiod(:,:,:,ch)=shiftedstack{ch}(rxy,rxy,rz,bead)./PSF.PSF(rxy,rxy,rz,ch);
-%         int1=shiftedstack{ch}(rxy,rxy,rz,bead);int2=PSF.PSF(rxy,rxy,rz,ch);
-%          ratio(ch)=int1(:)\int2(:);
-%     end
-%     normhd=median(ratiod(:),'omitnan');
-%     normh=1/mean(ratio);
-%     resh=[];
-%     for ch=1:4
-%         resh=vertcat(resh,shiftedstack{ch}(:,:,:,bead)-normh*PSF.PSF(:,:,:,ch));
-%         ressmallh=shiftedstack{ch}(rxy,rxy,rz,bead)-normh*PSF.PSF(rxy,rxy,rz,ch);
-%         ressum(bead,ch)=sqrt(sum(ressmallh(:).^2,'omitnan'))/globalnorm;
-%     end
-%     residuals(:,:,:,bead)=resh;
-% end
-% tab=(uitab(tgres,'Title','res beads'));imageslicer(residuals,'Parent',tab)
-% tab=(uitab(tgres,'Title','ressum'));ax=axes(tab);plot(ax,ressum);
 
- p.status.String=['Validate by fitting'];drawnow
-valfit=validatemodel(PSF,ph,'fit');
 %fit calibrations stack
 % shared=[0,0,1,1,1,1];
 % z0=ph.zstart;
@@ -168,7 +154,7 @@ valfit=validatemodel(PSF,ph,'fit');
 % 
 % [Io,Ao,Bo,PSFo]=make4Pimodel(PSFaligned,phaseshifts,ph.frequency,p);
 % % PSFo.normf=PSF.normf;
-% img=validatemodel(PSFo,ph,'corr');
+% img=validatemodel4Pi(PSFo,ph,'corr');
 % 
 %     plotI(:,:,:,1)=Io;plotI(:,:,:,2)=Ao;plotI(:,:,:,3)=Bo;plotI(:,:,:,4)=PSFaligned(:,:,:,1);
 %     tab=(uitab(tgprefit,'Title','IAB'));imageslicer(plotI,'Parent',tab)
@@ -327,7 +313,7 @@ Im=squeeze(mean(Ia,4));
 % PSF=IABfrom4PiPSFfit(squeeze(sum(imstackaligned(:,:,:,:,:),4)), phaseshifts(2),ph.frequency,9,25,[0 0 0 0]);
 [out,globalnorm2]=makeIABspline(Im,Am,Bm,ph);
 PSFiter=copyfields(PSF,out);
-valfit=validatemodel(PSFiter,ph,['fit' num2str(iter)]);
+valfit=validatemodel4Pi(PSFiter,ph,['fit' num2str(iter)]);
 PSF=PSFiter;
 
 end
@@ -440,13 +426,13 @@ PSFz.phaseshifts=phaseshifts;
 PSFz.factor=ones(4,1);
 PSFz.factor([2 4])=factor;
 
-validatemodel(PSFz,ph,'fitzast_<AB_i>') %z aligned by fitted z_astig
+validatemodel4Pi(PSFz,ph,'fitzast_<AB_i>') %z aligned by fitted z_astig
 
 
 [imstackalignedpn,factor]=normalizequadrants(imstackalignedp);
 [Im,Am,Bm,PSFm]=make4Pimodel(squeeze(mean(imstackalignedpn(:,:,:,:,:),4)),phaseshifts,ph.frequency,ph);
 
-validatemodel(PSFm,ph,'fitzph_<PSF>') %z aligned by z_phase
+validatemodel4Pi(PSFm,ph,'fitzph_<PSF>') %z aligned by z_phase
 
 %not better. Redo Transformation with fitted localizations?
 
@@ -481,27 +467,6 @@ validatemodel(PSFm,ph,'fitzph_<PSF>') %z aligned by z_phase
 end
 
 
-function [stack,filenumber,dT]=bead2stack(beads)
-ss=size(beads(1).stack.image);
-if length(ss)==3
-    stack=zeros(ss(1),ss(2),ss(3),length(beads));
-    for k=length(beads):-1:1
-        stack(:,:,:,k)=beads(k).stack.image;
-        filenumber(k)=beads.filenumber;
-    end
-elseif length(ss)==4
-    stack=zeros(ss(1),ss(2),ss(3),length(beads),ss(4));
-    numpar=6;
-    dT=zeros(numpar,ss(4),ss(3),length(beads));
-    for k=length(beads):-1:1
-        stack(:,:,:,k,:)=beads(k).stack.image;
-        filenumber(k)=beads.filenumber;
-        for zz=1:ss(3)
-            dT(1:2,:,zz,k)=squeeze(beads(k).shiftxy(1,[2 1],:));
-        end
-    end    
-end
-end
 
 function [phaseshiftso,frequencyo]=getphaseshifts(allPSFs,ax,p)
 ss=size(allPSFs);
@@ -834,121 +799,6 @@ end
 
 
 
-function [img,beads]=validatemodel(PSF,ph,titlet)
-if nargin<3
-    titlet='results';
-end
-Nfree=true;
-xyfree=true;
-ph.isglobalfit=true;
-
-[beads,ph]=images2beads_globalfitN(ph); 
-   %%%%%%%%%%%%%%%%%
-%    beads=beads(1)
-%%%%%%%%%%
-[imstack,fn,dxy]=bead2stack(beads);
-img.imstack=imstack;
-sim=size(imstack);
-imsqueeze=reshape(imstack,sim(1),sim(2),[],sim(end));
-
-if isfield(PSF,'normf')
-for k=2:size(imsqueeze,4)
-    imsqueeze(:,:,:,k)=imsqueeze(:,:,:,k)/PSF.normf(k);
-end
-end
-
-dTAll=reshape(dxy,size(dxy,1),sim(end),[]);
-img.dTAll=dTAll;
-if Nfree
-    shared=[1,1,0,1,1,1];
-    indN=3:6;
-    indz=8;
-    indp=9;
-else
-    shared=[1,1,1,1,1,1];
-    indN=3;
-    indz=5;
-    indp=6;
-end
-if xyfree
-    shared(1:2)=0;
-    indN=indN+6;
-    indz=indz+6;
-    indp=indp+6;
-end
-imstacksq=imsqueeze(ph.rangeh, ph.rangeh, :, :);
-iterations=50;
-z0=ph.zstart;
-[P,CRLB1 LL] = mleFit_LM_4Pi(single(imstacksq(:, :, :, :)),uint32(shared),iterations,single(PSF.Ispline), single(PSF.Aspline),single(PSF.Bspline),single(dTAll),single(ph.phi0),z0);
-
-% [P,CRLB1 LL] = CPUmleFit_LM_MultiChannel_4pi(single(imstacksq(:, :, :, :)),uint32(shared),iterations,single(PSF.Ispline), single(PSF.Aspline),single(PSF.Bspline),single(dTAll),single(ph.phi0),z0);
-
-img.imstacksq=imstacksq;
-img.sim=sim;
-img.fit.P=P;
-img.fit.CRLB=CRLB1;
-img.fit.PSF=PSF;
-%now unlink x, y to see if there is shift
-% shared(1:2)=0;
-% [Pu,CRLB1 LL] = CPUmleFit_LM_MultiChannel_4pi(single(imstacksq(:, :, :, :)),uint32(shared),iterations,single(PSF.Ispline), single(PSF.Aspline),single(PSF.Bspline),single(dTAll),single(phi0),z0);
-% dx21=Pu(:,2)-Pu(:,1);
- 
-%collect fitted parameters
-phase=mod(reshape(P(:,indp),[],sim(4)),2*pi);
-zphase=phase/2/PSF.frequency*ph.dz;
-zastig=reshape(P(:,indz),[],sim(4))*ph.dz;
-xfit=reshape(P(:,1),[],sim(4));
-yfit=reshape(P(:,2),[],sim(4));
-N=reshape(P(:,indN),[],sim(4),length(indN));
-%XXXX find z0!
-z_phi = reshape(z_from_phi_JR(P(:, indz), phase(:), PSF.frequency, ceil(sim(3)/2)-.7),[],sim(4))*ph.dz;
-
-%plot results of validation
-tab=(uitab(ph.tabgroup,'Title',['r_' titlet]));
-tgr=uitabgroup(tab);
-ax=axes(uitab(tgr,'Title','z_astig'));
-plot(ax,zastig)
-xlabel(ax,'frame')
-ylabel(ax,'z_astig')
-ax=axes(uitab(tgr,'Title','phase'));
-plot(ax,phase)
-xlabel(ax,'frame')
-ylabel(ax,'phase')
-ax=axes(uitab(tgr,'Title','phase(z_a)'));
-plot(ax,zastig,zphase)
-xlabel(ax,'z_astig')
-ylabel(ax,'z_phase')
-ax=axes(uitab(tgr,'Title','z_phase'));
-plot(ax,z_phi)
-xlabel(ax,'frame')
-ylabel(ax,'z_phi')
-ax=axes(uitab(tgr,'Title','x,y'));
-plot(ax,xfit,yfit,'+')
-xlabel(ax,'x')
-ylabel(ax,'y')
-ax=axes(uitab(tgr,'Title','x(z)'));
-hold(ax,'off')
-plot(ax,zastig,xfit)
-hold(ax, 'on')
-xlabel(ax,'z_astig')
-ylabel(ax,'x')
-
-ax=axes(uitab(tgr,'Title','LL'));
-
-histogram(ax,LL/sim(1)^2)
-title(ax,median(LL)/sim(1)^2)
-
-if Nfree
-    ax=axes(uitab(tgr,'Title','N'));
-    Np=squeeze(mean(N(28:34,:,:),1));
-    plot(ax,Np./Np(:,1))
-    xlabel(ax,'bead')
-    ylabel(ax,'Nfit')
-end
-
-% calculate residuals for each bead. Should it beased on average x,y,z in center?
-
-end
 
 function beadtrue=getbeadcoord(beads,ph)
 posall=[beads.pos];
