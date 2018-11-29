@@ -2,8 +2,8 @@ function [img,beads]=validatemodel4Pi(PSF,ph,titlet)
 if nargin<3
     titlet='results';
 end
-Nfree=false;
-xyfree=true;
+Nfree=true;
+xyfree=false;
 ph.isglobalfit=true;
 
 [beads,ph]=images2beads_globalfitN(ph); 
@@ -45,9 +45,10 @@ z0=ph.zstart;
 %prefit with free N
 sharedh=shared;
 
-iterationsh=15;
+iterationsh=20;
 sharedh(3)=0;
 % tic
+z0=[-10 10];
 Pi = mleFit_LM_4Pi(single(imstacksq(3:end-2, 3:end-2, :, :)),uint32(sharedh),iterationsh,single(PSF.Ispline), single(PSF.Aspline),single(PSF.Bspline),single(dTAll),single(ph.phi0),z0);
 % toc
 % tic
@@ -59,9 +60,10 @@ p0=Pi(:,end-1);
 Nnotlinked=reshape(Pi(:,indN(1):indN(1)+3),[],sim(4),4);
 
 iterations=25;
-sharedh(3)=1;
-[P,CRLB1 LL] = mleFit_LM_4Pi(single(imstacksq(:, :, :, :)),uint32(sharedh),iterations,single(PSF.Ispline), single(PSF.Aspline),single(PSF.Bspline),single(dTAll),single(ph.phi0),z0a,p0);
+% sharedh(3)=1;
+[P,CRLB1 LL] = mleFit_LM_4Pi(single(imstacksq(:, :, :, :)),uint32(shared),iterations,single(PSF.Ispline), single(PSF.Aspline),single(PSF.Bspline),single(dTAll),single(ph.phi0),z0a,p0);
 
+% P=Pi;
 % [P,CRLB1 LL] = CPUmleFit_LM_MultiChannel_4pi(single(imstacksq(:, :, :, :)),uint32(shared),iterations,single(PSF.Ispline), single(PSF.Aspline),single(PSF.Bspline),single(dTAll),single(ph.phi0),z0);
 
 img.imstacksq=imstacksq;
@@ -131,13 +133,18 @@ ax=axes(uitab(tgr,'Title','LL'));
 histogram(ax,LL/sim(1)^2)
 title(ax,median(LL)/sim(1)^2)
 
-if Nfree
+% if Nfree
     ax=axes(uitab(tgr,'Title','N'));
-    Np=squeeze(mean(N(28:34,:,:),1));
-    plot(ax,Np./Np(:,1))
+    if Nfree
+        Np=squeeze(mean(N(28:34,:,:),1));
+    else
+        Np=squeeze(mean(Nnotlinked(28:34,:,:),1));
+    end
+        
+    plot(ax,Np./Np(:,4))
     xlabel(ax,'bead')
     ylabel(ax,'Nfit')
-end
+% end
 
 % calculate residuals for each bead. Should it beased on average x,y,z in center?
 

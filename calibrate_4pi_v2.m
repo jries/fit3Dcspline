@@ -40,7 +40,14 @@ ph.isglobalfit=true;
 [beads,ph]=images2beads_globalfitN(ph);
 
 %XXXXX choose the most central bead, not the first one
-imstack=squeeze(bead2stack(beads(1)));
+
+normx=[1 1 1 1]; %in this case from single objective PSF
+% normx=normx/normx(3);
+imstack=(bead2stack(beads(1)));
+for k=1:length(normx)
+    imstack(:,:,:,:,k)=imstack(:,:,:,:,k)/normx(k);
+end
+imstack=squeeze(imstack);
 tab=(uitab(tgprefit,'Title','frequency'));ph.ax=axes(tab);
 [phaseh,ph.frequency]=getphaseshifts(imstack,ph.ax,ph);
 phaseshifts=[phaseh(1) phaseh(2) phaseh(1)+pi phaseh(2)+pi]; 
@@ -48,6 +55,8 @@ phaseshifts=phaseshifts-phaseshifts(1)-pi;
 
 %  p.status.String=['register beads in x,y,z'];drawnow
  PSF=IABfrom4PiPSFfit(imstack, phaseshifts(2),ph.frequency,9,50);
+ 
+ PSF.normf=normx;
  
  [PSFspl,globalnorm]=makeIABspline(PSF.I,PSF.A,PSF.B,p);
 PSF=copyfields(PSF,PSFspl);

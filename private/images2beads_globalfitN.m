@@ -94,6 +94,9 @@ for k=1:length(filelist)
         catch
             cutoff=myquantile(mimc(:),.95);
         end
+        if isnan(cutoff)
+            cutoff=myquantile(mimc(:),.95);
+        end
         cutoff=cutoff*p.cutoffrel;
         if any(int>cutoff)
             maxima=maxima(int>cutoff,:);
