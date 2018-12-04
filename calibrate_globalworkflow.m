@@ -75,16 +75,20 @@ ph.tabgroup=  uitabgroup(t4);
 ph.filelist=p.filelist;
 [S,beadpos,parameters_g]=calibrate3D_g(ph);
 
-if ~exist('S1','var') %take global one apart...
+% if ~exist('S1','var') %take global one apart...
+% recover S1, S2 dfrom S_glob to ensure same z reference, and PSF from
+% corresponding beads.
     S1=S;%XXXXXX also take the right coefficients!!!
     S1.PSF=S1.PSF(1);
     S1.cspline.coeff={S1.cspline.global.coeffrawref};
+    S1.cspline.normf=S1.cspline.normf(1);
     S2=S;
     S2.PSF=S2.PSF(2);
     S2.cspline.coeff={S2.cspline.global.coeffrawtar};
+    S2.cspline.normf=S2.cspline.normf(2);
     S1.Xrange=pr.xrange1;S2.Xrange=pr.xrange2;
     S1.Yrange=pr.yrange1;S2.Yrange=pr.yrange2;
-end
+% end
 S1.Yrangeall=pr.yrangeall;S1.Xrangeall=pr.xrangeall;
 S2.Yrangeall=pr.yrangeall;S2.Xrangeall=pr.xrangeall;
 S2.posind=pr.XYpos;

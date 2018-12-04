@@ -235,6 +235,7 @@ for X=1:length(p.xrange)-1
         if p.isglobalfit
             cspline.global.coeffrawref=csplinecal.cspline.coeffrawref;
             cspline.global.coeffrawtar=csplinecal.cspline.coeffrawtar;
+            cspline.normf=csplinecal.cspline.normf;
         end
         
         if contains(p.modality,'astig')
