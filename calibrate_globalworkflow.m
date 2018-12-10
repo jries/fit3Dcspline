@@ -47,12 +47,13 @@ ph.filechannel=2;
 % [S,beadpos]=calibrate3D_g(ph);
 
 % Later: also do test-fitting with corresponding spline coefficients
-p.tabgroup=uitab(tg,'Title','transformation');
+tt=uitab(tg,'Title','transformation');
+p.tabgroup=  uitabgroup(tt);
 p.separator=p.Tsplitpos+parameters1.roi{1}(pr.roiind);
 % find transform
 % if p.makeT || isempty(p.Tfile)
-    transform=transform_locs_simple(beadpos1{1},beadpos2{1},p);
-%     transform=makeglobalTransform(beadpos1{1},beadpos2{1},p);
+%     transform=transform_locs_simple(beadpos1{1},beadpos2{1},p);
+    transform=makeglobalTransform(beadpos1{1},beadpos2{1},p);
 else
     l=load(p.Tfile);
     transform=l.transformation;
@@ -205,25 +206,42 @@ end
 end
 
 % 
-% function transform=makeglobalTransform(bead1,bead2,ph)
-% %calculate transformN
-% pp=getranges(ph);
-% transform=interfaces.LocTransformN;
-% pt.mirror=[false false]; %ref
-% pt.xrange=pp.xrange1;
-% pt.yrange=pp.yrange1;
-% pt.unit='pixel';
-% pt.type='projective';
-% transform.setTransform(1,pt)
-% pt.mirror=[contains(pp.split,'rl') contains(pp.split,'ud')]; %ref
-% pt.xrange=pp.xrange2;
-% pt.yrange=pp.yrange2;
-% transform.setTransform(2,pt)
-% % th=uitab(ph.tabgroup,'Title','transform');
-% ph.ax=axes(ph.tabgroup);
-% 
-% [transform ,iAa,iBa]=transform_locs_simpleN(transform,1, bead1,2,bead2,ph); 
-% 
-% end
+function transform=makeglobalTransform(bead1,bead2,ph)
+%calculate transformN
+pp=getranges(ph);
+transform=interfaces.LocTransformN;
+pt.mirror=[false false]; %ref
+pt.xrange=pp.xrange1;
+pt.yrange=pp.yrange1;
+pt.unit='pixel';
+pt.type='projective';
+transform.setTransform(1,pt)
+if contains(pp.split,'rl')
+pt.mirror= 1;
+elseif contains(pp.split,'ud')
+    pt.mirror= 2;
+else
+    pt.mirror=0;
+end
+pt.xrange=pp.xrange2;
+pt.yrange=pp.yrange2;
+transform.setTransform(2,pt)
+th=ph.tabgroup;
+ph.ax=th;
+numf=5;
+mp=round(size(bead1.x,1)+1)/2;
+range=mp-numf:mp+numf;
+bc1=horzcat(reshape(bead1.x(range,:),[],1),...
+    reshape(bead1.y(range,:),[],1),...
+    reshape(bead1.z(range,:),[],1),...
+    reshape(bead1.frame(range,:),[],1));
+bc2=horzcat(reshape(bead2.x(range,:),[],1),...
+    reshape(bead2.y(range,:),[],1),...
+    reshape(bead2.z(range,:),[],1),...
+    reshape(bead2.frame(range,:),[],1));
+
+[transform ,iAa,iBa]=transform_locs_simpleN(transform,1, bc1,2,bc2,ph); 
+
+end
 % 
 

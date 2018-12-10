@@ -20,7 +20,8 @@ if p.isglobalfit
        transform=p.Tfile;
    end
     p.transformation=transform;
-    p.mirror=contains(transform.tinfo.mirror.targetmirror,'up-down')|contains(transform.tinfo.mirror.targetmirror,'left-right');
+    p.mirror=transform.info{2}.mirror;
+%     p.mirror=contains(transform.tinfo.mirror.targetmirror,'up-down')|contains(transform.tinfo.mirror.targetmirror,'left-right');
 else
     p.mirror=false;
 end
@@ -145,7 +146,7 @@ for k=1:length(filelist)
         %calculate in nm on chip (reference for transformation)
         maximanm=(maxima(:,1:2)+p.roi{k}([1 2]));
         
-        if isfield(transform.tinfo,'units') &&strcmp(transform.tinfo.units,'pixels')
+        if strcmp(transform.unit,'pixel')
             pixfac=[1 1];
             pixfac2=[1 1];
         else
@@ -157,14 +158,16 @@ for k=1:length(filelist)
 
         %transform reference to target
 
-            indref=transform.getRef(maximanm(:,1),maximanm(:,2));
+%             indref=transform.getRef(maximanm(:,1),maximanm(:,2));
+            indref=transform.getPart(1,maximanm(:,1:2));
             maximaref=maxima(indref,:);
-            [x,y]=transform.transformCoordinatesFwd(maximanm(indref,1),maximanm(indref,2));
+            xy=transform.transformToTarget(2,maximaref(:,1:2));
+%             [x,y]=transform.transformCoordinatesFwd(maximanm(indref,1),maximanm(indref,2));
         %     [x,y]=transform.transformCoordinatesFwd(maximanm(indref,2),maximanm(indref,1));
 
             maximatargetf=[];
-            maximatargetf(:,1)=x/pixfac2(1)-p.roi2{k}(1); %now on target chip: use roi2
-            maximatargetf(:,2)=y/pixfac2(end)-p.roi2{k}(2);
+            maximatargetf(:,1)=xy(:,1)/pixfac2(1)-p.roi2{k}(1); %now on target chip: use roi2
+            maximatargetf(:,2)=xy(:,2)/pixfac2(end)-p.roi2{k}(2);
     %     maximatargetf(:,2)=x/p.smappos.pixelsize{k}(1)/1000-p.smappos.roi{k}(1);
     %     maximatargetf(:,1)=y/p.smappos.pixelsize{k}(end)/1000-p.smappos.roi{k}(2);
 

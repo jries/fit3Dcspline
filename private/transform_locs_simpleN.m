@@ -17,18 +17,23 @@ if isfield(p,'Tfile') && exist(p.Tfile,'file')
 else %all initial estimation:
     inforef=transform.info{channelref};
     infotarget=transform.info{channeltarget};
+    inforef=takeoutinf(inforef, 2*p.separator);
+    infotarget=takeoutinf(infotarget, 2*p.separator);
     locT(:,1)=loctarget(:,1)-infotarget.xrange(1);locT(:,2)=loctarget(:,2)-infotarget.yrange(1);
     locR(:,1)=locref(:,1)-inforef.xrange(1);locR(:,2)=locref(:,2)-inforef.yrange(1);
     
-    %mirror if needed
+    %mirror if neede
     sref=[inforef.xrange(2)-inforef.xrange(1) inforef.yrange(2)-inforef.yrange(1)];
+%     if any(isinf(sref))
+%        sref= [2*p.separator 2*p.separator];
+%     end
     for k=1:length(inforef.mirror)
         if inforef.mirror(k)>0
             locR(:,inforef.mirror(k))=sref(inforef.mirror(k))-locR(:,inforef.mirror(k));
         end
     end
     star=[infotarget.xrange(2)-infotarget.xrange(1) infotarget.yrange(2)-infotarget.yrange(1)];
-    for k=1:length(inforef.mirror)
+    for k=1:length(infotarget.mirror)
         if infotarget.mirror(k)>0
             locT(:,infotarget.mirror(k))=star(infotarget.mirror(k))-locT(:,infotarget.mirror(k));
         end
@@ -46,33 +51,50 @@ else %all initial estimation:
     [x0,y0]=ind2sub(size(Gf),indmax);
     dx0=x0-ceil(size(Gf,1)/2);
     dy0=y0-ceil(size(Gf,2)/2);
-%     loctT.x=loctT.x-dx;
-%     loctT.y=loctT.y-dy;
   
 
 end
-locRh.x=locR(:,1);locRh.y=locR(:,2);locRh.frame=ones(size(locRh.x));
-locTh.x=locT(:,1);locTh.y=locT(:,2);locTh.frame=ones(size(locTh.x));
+
+
+locRh.x=locR(:,1);locRh.y=locR(:,2);
+locTh.x=locT(:,1);locTh.y=locT(:,2);
+if ndims(locref)>3
+    locRh.frame=locref(:,4);
+    locTh.frame=loctarget(:,4);
+else
+locRh.frame=ones(size(locRh.x));
+locTh.frame=ones(size(locTh.x));
+end
 [iAa,iBa,na,nb,nseen]=matchlocsall(locRh,locTh,-dx0,-dy0,2*sepscale,1e5);
 
 % transform=interfaces.LocTransform;
 % t.type='polynomial';
 % % t.type='affine';
 % t.parameter=3;
-transform.findTransform(channeltarget,locref(iAa,:),loctarget(iBa,:))
+transform.findTransform(channeltarget,locref(iAa,1:2),loctarget(iBa,1:2))
 
 
 
- tback=transform.transformToReference(channeltarget,loctarget(iBa,:));
-dd=tback-locref(iAa,:);
+ tback=transform.transformToReference(channeltarget,loctarget(iBa,1:2));
+dd=tback-locref(iAa,1:2);
 
 %  figure(88);plot(tback(:,1),tback(:,2),'x',locref(:,1),locref(:,2),'o')  
 %   figure(88);plot(locref.x,locref.y,'b.',loctT.x,loctT.y,'r+',loctT.x-dx0,loctT.y-dy0,'g.',loctargeti.x,loctargeti.y,'rx',xa,ya,'cx') 
    
-if isfield(p,'ax')&& ~isempty(p.ax)
+if isfield(p,'ax')&& ~isempty(p.ax) && isa(p.ax,'matlab.graphics.axis.Axes')
     axh=p.ax;
     plot(axh,dd(:,1),dd(:,2),'x')
     title(axh,[num2str(std(dd(:,1))) ', ' num2str(std(dd(:,2)))]);
+elseif isfield(p,'ax')&& ~isempty(p.ax) && isa(p.ax,'matlab.ui.container.TabGroup') 
+    axh=axes(uitab(p.ax,'Title','difference'));
+    plot(axh,dd(:,1),dd(:,2),'x')
+    title(axh,[num2str(std(dd(:,1))) ', ' num2str(std(dd(:,2)))]);
+    
+    axh=axes(uitab(p.ax,'Title','CC'));
+    imagesc(Gf);
+    axh=axes(uitab(p.ax,'Title','pos'));
+    plot(axh,locref(iAa,1),locref(iAa,2),'o',locref(na,1),locref(na,2),'+')
+    legend(axh,'paired','not paired')
 end
 % transform.tinfo.targetpos=targetpos;
 % transform.tinfo.separator=separators;
@@ -82,6 +104,12 @@ end
 
 end
 
+function struct=takeoutinf(struct, replace)
+    struct.xrange(struct.xrange==-Inf)=0;
+    struct.xrange(struct.xrange==Inf)=replace;
+    struct.yrange(struct.yrange==-Inf)=0;
+    struct.yrange(struct.yrange==Inf)=replace;
+end
 
 function pos=reducepos(posin,df)
     z0=ceil(size(posin.x,1)/2);
