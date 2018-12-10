@@ -15,7 +15,8 @@ PSFs=PSF(mp-rx:mp+rx,mp-rx:mp+rx,mpz-rz:mpz+rz,:);
 
 % startpar=[0 0 0 0 0 0 0 0 0 1 1 1];
 startpar=[0 0 0 0 0 0  1 1 1];
-startpar=[0 0 0 0 0 0]
+% startpar=[0 0 0 0 0 0  1 1 1 phaseshift]
+% startpar=[0 0 0 0 0 0]
 % fixpar=[phaseshift frequency];
 zshift0h=zshift0(2:4)-zshift0(1);
 fixpar=[phaseshift frequency zshift0h];
@@ -43,6 +44,12 @@ out.normf=[1 fitpar(7:9)];
 else
     out.normf=ones(4,1);
 end
+if length(fitpar)>9
+    phaseshift=fitpar(10);
+    if phaseshift>pi
+        phaseshift=phaseshift-2*pi;
+    end
+end
 out.frequency=frequency;
 out.phaseshifts=[-pi phaseshift 0 phaseshift+pi];
 
@@ -64,8 +71,11 @@ normf=par(7:9);
 else
     normf=ones(1,3);
 end
-
+if length(par)>9
+    phaseshift=par(10);
+else
 phaseshift=fixpar(1);
+end
 frequency=fixpar(2);
 dz=fixpar(3:5);
 

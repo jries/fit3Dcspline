@@ -2,8 +2,16 @@ function [img,beads]=validatemodel4Pi(PSF,ph,titlet)
 if nargin<3
     titlet='results';
 end
-Nfree=true;
-xyfree=false;
+if isfield(ph,'Nfree')
+    Nfree=ph.Nfree;
+else
+    Nfree=false;
+end
+if isfield(ph,'xyfree')
+    xyfree=ph.xyfree;
+else
+    xyfree=false;
+end
 ph.isglobalfit=true;
 
 [beads,ph]=images2beads_globalfitN(ph); 
@@ -40,39 +48,48 @@ if xyfree
 end
 imstacksq=imsqueeze(ph.rangeh, ph.rangeh, :, :);
 
-z0=ph.zstart;
+z0a=ph.zstart;
 
 %prefit with free N
-sharedh=shared;
+% sharedh=shared;
 
-iterationsh=20;
-sharedh(3)=0;
+% iterationsh=100;
+% sharedh(3)=0;
 % tic
-z0=[-10 10];
-Pi = mleFit_LM_4Pi(single(imstacksq(3:end-2, 3:end-2, :, :)),uint32(sharedh),iterationsh,single(PSF.Ispline), single(PSF.Aspline),single(PSF.Bspline),single(dTAll),single(ph.phi0),z0);
+% z0=[-5 ];
+% 
+% P0 = mleFit_LM_4Pi(single(imstacksq(:, :, :, :)),uint32(ones(size(shared))),iterationsh,single(PSF.Ispline), single(PSF.Aspline),single(PSF.Bspline),single(dTAll),single(ph.phi0),0);
+% 
+% z0a=P0(:,end-2)-(size(PSF.I,3)/2);
+% p0=mod(P0(:,end-1),2*pi);
+
+% Pi = mleFit_LM_4Pi(single(imstacksq(3:end-2, 3:end-2, :, :)),uint32(sharedh),iterationsh,single(PSF.Ispline), single(PSF.Aspline),single(PSF.Bspline),single(dTAll),single(ph.phi0),z0a0,p00);
 % toc
 % tic
 % Pi2 = mleFit_LM_4Pi(single(imstacksq(:, :, :, :)),uint32(sharedh),iterationsh,single(PSF.Ispline), single(PSF.Aspline),single(PSF.Bspline),single(dTAll),single(ph.phi0),z0);
 % toc
 
-z0a=Pi(:,end-2)-(size(PSF.I,3)/2);
-p0=Pi(:,end-1);
-Nnotlinked=reshape(Pi(:,indN(1):indN(1)+3),[],sim(4),4);
+% z0a=Pi(:,end-2)-(size(PSF.I,3)/2);
+% p0=Pi(:,end-1);
+% Nnotlinked=reshape(Pi(:,indN(1):indN(1)+3),[],sim(4),4);
 
-iterations=25;
+% z0a=0;p0=0;
+% z0a=z0;
+p0a=[0 pi]+pi/4;
+iterations=100;
 % sharedh(3)=1;
-[P,CRLB1 LL] = mleFit_LM_4Pi(single(imstacksq(:, :, :, :)),uint32(shared),iterations,single(PSF.Ispline), single(PSF.Aspline),single(PSF.Bspline),single(dTAll),single(ph.phi0),z0a,p0);
+[P,CRLB1 LL] = mleFit_LM_4Pi(single(imstacksq(:, :, :, :)),uint32(shared),iterations,single(PSF.Ispline), single(PSF.Aspline),single(PSF.Bspline),single(dTAll),single(ph.phi0),z0a,p0a);
 
-% P=Pi;
+% P=P0;
 % [P,CRLB1 LL] = CPUmleFit_LM_MultiChannel_4pi(single(imstacksq(:, :, :, :)),uint32(shared),iterations,single(PSF.Ispline), single(PSF.Aspline),single(PSF.Bspline),single(dTAll),single(ph.phi0),z0);
 
 img.imstacksq=imstacksq;
 img.sim=sim;
-img.fit.Nnotlinked=Nnotlinked;
+% img.fit.Nnotlinked=Nnotlinked;
 img.fit.P=P;
 img.fit.CRLB=CRLB1;
 img.fit.PSF=PSF;
-img.fit.shared=sharedh;
+img.fit.shared=shared;
 %now unlink x, y to see if there is shift
 % shared(1:2)=0;
 % [Pu,CRLB1 LL] = CPUmleFit_LM_MultiChannel_4pi(single(imstacksq(:, :, :, :)),uint32(shared),iterations,single(PSF.Ispline), single(PSF.Aspline),single(PSF.Bspline),single(dTAll),single(phi0),z0);
@@ -85,6 +102,11 @@ zastig=reshape(P(:,indz),[],sim(4))*ph.dz;
 xfit=reshape(P(:,1),[],sim(4));
 yfit=reshape(P(:,2),[],sim(4));
 N=reshape(P(:,indN),[],sim(4),length(indN));
+
+
+LLi=reshape(LL,[],sim(4));
+iter=reshape(P(:,end),[],sim(4));
+
 %XXXX find z0!
 z_phi = reshape(z_from_phi_JR(P(:, indz), phase(:), PSF.frequency, ceil(sim(3)/2)-.7),[],sim(4))*ph.dz;
 
@@ -133,18 +155,18 @@ ax=axes(uitab(tgr,'Title','LL'));
 histogram(ax,LL/sim(1)^2)
 title(ax,median(LL)/sim(1)^2)
 
-% if Nfree
+if Nfree
     ax=axes(uitab(tgr,'Title','N'));
-    if Nfree
+%     if Nfree
         Np=squeeze(mean(N(28:34,:,:),1));
-    else
-        Np=squeeze(mean(Nnotlinked(28:34,:,:),1));
-    end
+%     else
+%         Np=squeeze(mean(Nnotlinked(28:34,:,:),1));
+% end 
         
     plot(ax,Np./Np(:,4))
     xlabel(ax,'bead')
     ylabel(ax,'Nfit')
-% end
+end
 
 % calculate residuals for each bead. Should it beased on average x,y,z in center?
 

@@ -20,8 +20,8 @@ if ~isempty(p.settingsfile4pi) && exist(p.settingsfile4pi,'file')
     ph.settings_3D=settings_3D;
 end
 
-ph.zstart= [-2 -1 0 1 2]*13; 
-ph.zstart=0;
+ph.zstart= [ -1 0 1 ]*22; 
+% ph.zstart=0;
 %segment beads
  p.status.String=['load files'];drawnow
  ph.isglobalfit=false; %segment all beads together
@@ -51,12 +51,12 @@ imstack=squeeze(imstack);
 tab=(uitab(tgprefit,'Title','frequency'));ph.ax=axes(tab);
 [phaseh,ph.frequency]=getphaseshifts(imstack,ph.ax,ph);
 phaseshifts=[phaseh(1) phaseh(2) phaseh(1)+pi phaseh(2)+pi]; 
-phaseshifts=phaseshifts-phaseshifts(1)-pi;
+phaseshifts=phaseshifts-phaseshifts(1)-pi;phaseshifts(phaseshifts<-pi)=phaseshifts(phaseshifts<-pi)+2*pi;
 
 %  p.status.String=['register beads in x,y,z'];drawnow
  PSF=IABfrom4PiPSFfit(imstack, phaseshifts(2),ph.frequency,9,50);
- 
- PSF.normf=normx;
+%  phaseshifts=PSF.phaseshifts;
+%  PSF.normf=normx;
  
  [PSFspl,globalnorm]=makeIABspline(PSF.I,PSF.A,PSF.B,p);
 PSF=copyfields(PSF,PSFspl);
@@ -127,8 +127,13 @@ tabres=(uitab(tgres,'Title','residuals all'));
 imageslicer(plotR,'Parent',tabres)
     
 p.status.String=['Validate by fitting'];drawnow
+ph.Nfree=false;
+ph.xyfree=true;
 valfit=validatemodel4Pi(PSF,ph,'fit');
-out=averagefit4Pi(valfit,'Nf',valfit.fit.Nnotlinked);
+% out=averagefit4Pi(valfit);
+
+startp=averagefit4Pi(valfit);
+out=IABfrom4PiPSFfitmany(valfit,startp, PSF.phaseshifts(2),ph.frequency,9,30);
 % get positions etc around f0: averagefit4Pi: but with extension to handle
 % free fitting paraemters x,y,N etc.
 % calculate better transformation
@@ -228,8 +233,8 @@ end
 % [imstack,fn,dxy]=bead2stack(beads);
 % PSF.globalnorm=globalnorm;
 
-startp=averagefit4Pi(valfit);
-out=IABfrom4PiPSFfitmany(valfit,startp, phaseshifts(2),ph.frequency,9,30);
+% startp=averagefit4Pi(valfit);
+% out=IABfrom4PiPSFfitmany(valfit,startp, phaseshifts(2),ph.frequency,9,30);
 
 % OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO 
 % now testing iterative fitting and alignemnt of beads with
@@ -481,7 +486,7 @@ function [phaseshiftso,frequencyo]=getphaseshifts(allPSFs,ax,p)
 ss=size(allPSFs);
 range=(ss(1)+1)/2+[-1 1];
 fw=20;
-fw=ceil(500/p.dz);
+fw=ceil(300/p.dz);
 frange=round(ss(3)/2+(-fw:fw)');
 
 f=(1:ss(3))'-ss(3)/2;
@@ -503,15 +508,22 @@ intn=intnf(frange,:);
     
     %find kapprox
     indzero=find(f>=0,1,'first');
-    inttest=intnf(indzero:end,1);
-    ind1=find(inttest>=0.5,1,'first');
-    inttest2=inttest(ind1:end);
-    ind2=find(inttest2<=0.5,1,'first');
-    inttest3=inttest2(ind2:end);
-    ind3=find(inttest3>=0.5,1,'first');
-     inttest4=inttest3(ind3:end);
-    ind4=find(inttest4<=0.5,1,'first');   
-    kapprox=pi/(ind3+ind4)*2
+%     inttest=intnf(indzero:end,1);
+%     go the other way
+    inttest=intnf(1:indzero,1);
+%     ind1=find(inttest>=0.5,1,'first');
+    ind1=find(inttest>=0.5,1,'last');
+%     inttest2=inttest(ind1:end);
+    
+    inttest2=inttest(1:ind1);
+    ind2=find(inttest2<=0.5,1,'last');
+%     ind2=find(inttest2<=0.5,1,'first');
+%     inttest3=inttest2(ind2:end);
+    inttest3=intnf(ind2+1:end,1);
+    ind3=find(inttest3<=0.5,1,'first');
+     inttest4=inttest3(ind3+1:end);
+    ind4=find(inttest4>=0.5,1,'first');   
+    kapprox=2*pi/(ind3+ind4)
     
 %     st1=[kapprox 0 0.5 0 0 0.5 0 0];
 %     lba1=[0 -pi]
@@ -547,13 +559,13 @@ plot(ax,f,intnf,':+')
 % plot(ax,f(frange),intn)
 hold(ax,'on')
 fst=zintpg(startpa,f(frange));
-% plot(ax,f(frange),fst(:,:),'b--')
+plot(ax,f(frange),fst(:,:),'y--')
 
 % plot(ax,f(frange)',fitted0','r');
 plot(ax,f(frange)',fitted','k');
 
-phaseshiftso=fitpg2([2 3]);
-frequencyo=fitpg2(1)/2;
+phaseshiftso=mod(fitpg2([2 3]),2*pi);
+frequencyo=fitpg2(1)/2; %sin(2kz) in PSF formula
 title(ax,['frequency: ' num2str(frequencyo,3) ', phaseshift/pi: ' num2str(mod((phaseshiftso(2)-phaseshiftso(1))/pi,2),3)])
 %   fnc=@(k,phi1,phi2,A11,A21,A31,B11,B21,B31,A12,A22,A32,B12,B22,B32,A13,A23,A33,B13,B23,B33,A14,A24,A34,B14,B24,B34,x) zintg(k,phi1,A11,A21,A31,B11,B21,B31,phi2,A12,A22,A32,B12,B22,B32,phi3,A13,A23,A33,B13,B23,B33,phi4,A14,A24,A34,B14,B24,B34,x);
 
