@@ -161,7 +161,7 @@ for k=1:length(filelist)
 %             indref=transform.getRef(maximanm(:,1),maximanm(:,2));
             indref=transform.getPart(1,maximanm(:,1:2));
             maximaref=maxima(indref,:);
-            xy=transform.transformToTarget(2,maximaref(:,1:2));
+            xy=transform.transformToTarget(2,maximanm(indref,1:2));
 %             [x,y]=transform.transformCoordinatesFwd(maximanm(indref,1),maximanm(indref,2));
         %     [x,y]=transform.transformCoordinatesFwd(maximanm(indref,2),maximanm(indref,1));
 

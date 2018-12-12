@@ -65,18 +65,24 @@ else
 locRh.frame=ones(size(locRh.x));
 locTh.frame=ones(size(locTh.x));
 end
-[iAa,iBa,na,nb,nseen]=matchlocsall(locRh,locTh,-dx0,-dy0,2*sepscale,1e5);
+[iAa,iBa,na,nb,nseen]=matchlocsall(locRh,locTh,-dx0,-dy0,4*sepscale,1e5);
 
-% transform=interfaces.LocTransform;
-% t.type='polynomial';
-% % t.type='affine';
-% t.parameter=3;
-transform.findTransform(channeltarget,locref(iAa,1:2),loctarget(iBa,1:2))
+cutofffactor=[1 0.5 0.2 0.1 0.05];
+dd=zeros(size(iAa,1),2);
 
-
-
+for k=1:length(cutofffactor)
+goodind=abs(dd(:,1))<cutofffactor(k)*sepscale & abs(dd(:,2))<cutofffactor(k)*sepscale;
+ transform.findTransform(channeltarget,locref(iAa(goodind),1:2),loctarget(iBa(goodind),1:2))
  tback=transform.transformToReference(channeltarget,loctarget(iBa,1:2));
 dd=tback-locref(iAa,1:2);
+end
+dd=dd(goodind,:);
+% transform.findTransform(channeltarget,locref(iAa,1:2),loctarget(iBa,1:2))
+
+
+% 
+%  tback=transform.transformToReference(channeltarget,loctarget(iBa,1:2));
+% dd=tback-locref(iAa,1:2);
 
 %  figure(88);plot(tback(:,1),tback(:,2),'x',locref(:,1),locref(:,2),'o')  
 %   figure(88);plot(locref.x,locref.y,'b.',loctT.x,loctT.y,'r+',loctT.x-dx0,loctT.y-dy0,'g.',loctargeti.x,loctargeti.y,'rx',xa,ya,'cx') 
@@ -86,6 +92,12 @@ if isfield(p,'ax')&& ~isempty(p.ax) && isa(p.ax,'matlab.graphics.axis.Axes')
     plot(axh,dd(:,1),dd(:,2),'x')
     title(axh,[num2str(std(dd(:,1))) ', ' num2str(std(dd(:,2)))]);
 elseif isfield(p,'ax')&& ~isempty(p.ax) && isa(p.ax,'matlab.ui.container.TabGroup') 
+     
+    axh=axes(uitab(p.ax,'Title','beads'));
+    plot(axh,locRh.x,locRh.y,'x',locTh.x,locTh.y,'o')
+    plot(axh,locRh.x(iAa),locRh.y(iAa),'ro',locTh.x(iBa)-dx0,locTh.y(iBa)-dy0,'bo')
+
+    
     axh=axes(uitab(p.ax,'Title','difference'));
     plot(axh,dd(:,1),dd(:,2),'x')
     title(axh,[num2str(std(dd(:,1))) ', ' num2str(std(dd(:,2)))]);

@@ -83,6 +83,7 @@ ph.filelist=p.filelist;
     S1.PSF=S1.PSF(1);
     S1.cspline.coeff={S1.cspline.global.coeffrawref};
     S1.cspline.normf=S1.cspline.normf(1);
+    S1.cspline.mirror=0;
     S2=S;
     S2.PSF=S2.PSF(2);
     S2.cspline.coeff={S2.cspline.global.coeffrawtar};
@@ -234,11 +235,11 @@ range=mp-numf:mp+numf;
 bc1=horzcat(reshape(bead1.x(range,:),[],1),...
     reshape(bead1.y(range,:),[],1),...
     reshape(bead1.z(range,:),[],1),...
-    reshape(bead1.frame(range,:),[],1));
+    reshape(bead1.filenumber(range,:)*100+bead1.frame(range,:),[],1));
 bc2=horzcat(reshape(bead2.x(range,:),[],1),...
     reshape(bead2.y(range,:),[],1),...
     reshape(bead2.z(range,:),[],1),...
-    reshape(bead2.frame(range,:),[],1));
+    reshape(bead2.filenumber(range,:)*100+bead2.frame(range,:),[],1));
 
 [transform ,iAa,iBa]=transform_locs_simpleN(transform,1, bc1,2,bc2,ph); 
 

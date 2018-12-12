@@ -231,6 +231,7 @@ for X=1:length(p.xrange)-1
         cspline.z0=csplinecal.cspline.z0;
         cspline.x0=csplinecal.cspline.x0;
         cspline.global.isglobal=p.isglobalfit;
+        cspline.mirror=csplinecal.cspline.mirror;
         cspline.global.transformation=p.transformation;
         if p.isglobalfit
             cspline.global.coeffrawref=csplinecal.cspline.coeffrawref;

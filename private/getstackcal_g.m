@@ -45,12 +45,12 @@ sstack=size(beads(1).stack.image);
                     allstackst(:,:,:,B)=beads(B).stack.imagetar(end:-1:1,:,:);
                     shiftxy(B,1:2)=beads(B).shiftxy;
                     shiftxy(B,2)=-shiftxy(B,2);
-                    mirroraxis=1;
+                    mirroraxis=2;
                 else %right left
                     allstackst(:,:,:,B)=beads(B).stack.imagetar(:,end:-1:1,:);
                     shiftxy(B,1:2)=beads(B).shiftxy;
                     shiftxy(B,1)=-shiftxy(B,1);
-                    mirroraxis=2;
+                    mirroraxis=1;
                 end
             end
         else
@@ -195,9 +195,9 @@ sstack=size(beads(1).stack.image);
         switch mirroraxis
             case 0
                 PSFtm=corrPSFhdt;
-            case 1
-                PSFtm=corrPSFhdt(end:-1:1,:,:);
             case 2
+                PSFtm=corrPSFhdt(end:-1:1,:,:);
+            case 1
                 PSFtm=corrPSFhdt(:,end:-1:1,:);
         end
         coefftnomirror=Spline3D_interp(PSFtm);
@@ -209,12 +209,14 @@ sstack=size(beads(1).stack.image);
         cspline.coeffrawref=coeffr;
         cspline.coeffrawtar=coefftnomirror;
         cspline.normf=[intglobalr intglobalt]/intglobalr;
+        cspline.mirror=mirroraxis;
         
     else
         bspline.bslpine={b3_0r};
         cspline.coeff={coeffr};    
         splinefit.PSF={corrPSFr};
-        splinefit.PSFsmooth={corrPSFhdr};       
+        splinefit.PSFsmooth={corrPSFhdr};   
+        cspline.mirror=0;
     end
    
         
