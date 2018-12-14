@@ -103,7 +103,7 @@ elseif isfield(p,'ax')&& ~isempty(p.ax) && isa(p.ax,'matlab.ui.container.TabGrou
     title(axh,[num2str(std(dd(:,1))) ', ' num2str(std(dd(:,2)))]);
     
     axh=axes(uitab(p.ax,'Title','CC'));
-    imagesc(Gf);
+    imagesc(axh,Gf);
     axh=axes(uitab(p.ax,'Title','pos'));
     plot(axh,locref(iAa,1),locref(iAa,2),'o',locref(na,1),locref(na,2),'+')
     legend(axh,'paired','not paired')

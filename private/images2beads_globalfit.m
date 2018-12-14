@@ -44,7 +44,7 @@ for k=1:length(filelist)
         p.roi2=p.roi;
         imstack2=imstack;
     end
-    size(imstack)
+%     size(imstack)
     if is4pi
         if ~isempty(settings3D)
             p.settings_3D=settings3D;
