@@ -336,8 +336,8 @@ sstack=size(beads(1).stack.image);
                 
                 for k=1:size(posbeads.x,2)
                    %test if right roi!
-                    posbeads.xim(:,k)=posbeads.x(:,k)+beadshere(k).pos(1)+1; %%%just to make fit  somethign still wrong with T
-                    posbeads.yim(:,k)=posbeads.y(:,k)+beadshere(k).pos(2)+1;
+                    posbeads.xim(:,k)=posbeads.x(:,k)+beadshere(k).pos(1); 
+                    posbeads.yim(:,k)=posbeads.y(:,k)+beadshere(k).pos(2);
                     posbeads.x(:,k)=posbeads.xim(:,k)+beadshere(k).roi(1);
                     posbeads.y(:,k)=posbeads.yim(:,k)+beadshere(k).roi(2);
                     posbeads.filenumber(:,k)=beadshere(k).filenumber;

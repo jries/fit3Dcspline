@@ -49,7 +49,8 @@ ph.filechannel=2;
 % Later: also do test-fitting with corresponding spline coefficients
 tt=uitab(tg,'Title','transformation');
 p.tabgroup=  uitabgroup(tt);
-p.separator=p.Tsplitpos+parameters1.roi{1}(pr.roiind);
+% p.separator=p.Tsplitpos+parameters1.roi{1}(pr.roiind);
+p.separator=p.Tsplitpos;
 % find transform
 % if p.makeT || isempty(p.Tfile)
 %     transform=transform_locs_simple(beadpos1{1},beadpos2{1},p);
@@ -218,7 +219,7 @@ pt.unit='pixel';
 pt.type='projective';
 transform.setTransform(1,pt)
 if contains(pp.split,'rl')
-pt.mirror= 1;
+    pt.mirror= 1;
 elseif contains(pp.split,'ud')
     pt.mirror= 2;
 else

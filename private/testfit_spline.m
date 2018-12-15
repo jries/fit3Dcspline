@@ -74,7 +74,7 @@ t=tic;
         ylabel(ax,'zfit (nm)')
         zs(:,k)=P(:,zind);
         posbeads.z(:,k)=P(:,zind);
-        dn=ceil((size(fitstack,1)+1)/2);
+        dn=ceil((size(fitstack,1)-1)/2);
         posbeads.x(:,k)=(P(:,2)-dn);
         posbeads.y(:,k)=(P(:,1)-dn);
         posbeads.frame(:,k)=1:length(z);
