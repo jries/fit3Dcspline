@@ -62,9 +62,10 @@ pixelsize=100;
     end
     if isfield(p,'emgain') && p.emgain
         imstack=imstack(:,end:-1:1,:);
-         if any(roi(1:2)>0) %if roi(1:2)=[0 0] it is likely that roi was not read out and set to default.
-             roi(1)=512-roi(1)-roi(3);
-         end
+        %XXXX for Andor take out?
+%          if any(roi(1:2)>0) %if roi(1:2)=[0 0] it is likely that roi was not read out and set to default.
+%              roi(1)=512-roi(1)-roi(3);
+%          end
     end
 %     if isfield(p,'roimask')&&~isempty(p.roimask)
 %         imstack=imstack.*uint16(p.roimask);
