@@ -172,7 +172,7 @@ sstack=size(beads(1).stack.image);
     p.status.String='calculating cspline coefficients in progress';drawnow
     corrPSFhdr = interp3_0(b3_0r,XX,YY,ZZ,0);
     %calculate cspline coefficients
-    coeffr = Spline3D_interp(corrPSFhdr);
+    coeffr = single(Spline3D_interp(corrPSFhdr));
         
     if p.isglobalfit
         corrPSFt=corrPSF(size(allstacks,1)+1:end,:,:);
@@ -190,7 +190,7 @@ sstack=size(beads(1).stack.image);
         corrPSFst=corrPSFnt(rangex,rangey,rangez);
         b3_0t=bsarray(double(corrPSFst),'lambda',lambda);
         corrPSFhdt = interp3_0(b3_0t,XX,YY,ZZ,0);
-        coefft = Spline3D_interp(corrPSFhdt);
+        coefft = single(Spline3D_interp(corrPSFhdt));
         
         switch mirroraxis
             case 0
@@ -200,22 +200,25 @@ sstack=size(beads(1).stack.image);
             case 1
                 PSFtm=corrPSFhdt(:,end:-1:1,:);
         end
-        coefftnomirror=Spline3D_interp(PSFtm);
+        coefftnomirror=single(Spline3D_interp(PSFtm));
         %assemble output structure for saving
-        bspline.bslpine={b3_0r,b3_0t};
-        cspline.coeff={coeffr, coefft};
-        splinefit.PSF={corrPSFr,corrPSFt};
-        splinefit.PSFsmooth={corrPSFhdr,corrPSFhdt};
-        cspline.coeffrawref=coeffr;
-        cspline.coeffrawtar=coefftnomirror;
+         b3_0r.coeffs=single(b3_0r.coeffs);
+         b3_0t.coeffs=single(b3_0t.coeffs);
+        bspline.bslpine=({b3_0r,b3_0t});
+        cspline.coeff={single(coeffr), single(coefft)};
+        splinefit.PSF={single(corrPSFr),single(corrPSFt)};
+        splinefit.PSFsmooth={single(corrPSFhdr),single(corrPSFhdt)};
+        cspline.coeffrawref=single(coeffr);
+        cspline.coeffrawtar=single(coefftnomirror);
         cspline.normf=[intglobalr intglobalt]/intglobalr;
         cspline.mirror=mirroraxis;
         
     else
-        bspline.bslpine={b3_0r};
-        cspline.coeff={coeffr};    
-        splinefit.PSF={corrPSFr};
-        splinefit.PSFsmooth={corrPSFhdr};   
+        b3_0r.coeffs=single(b3_0r.coeffs);
+        bspline.bslpine=({b3_0r});
+        cspline.coeff={single(coeffr)};    
+        splinefit.PSF={single(corrPSFr)};
+        splinefit.PSFsmooth={single(corrPSFhdr)};   
         cspline.mirror=0;
     end
    
