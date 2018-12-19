@@ -65,7 +65,7 @@ else
 locRh.frame=ones(size(locRh.x));
 locTh.frame=ones(size(locTh.x));
 end
-[iAa,iBa,na,nb,nseen]=matchlocsall(locRh,locTh,-dx0,-dy0,8*sepscale,1e5);
+[iAa,iBa,na,nb,nseen]=matchlocsall(locRh,locTh,-dx0,-dy0,4*sepscale,1e5);
 
 cutofffactor=[1 0.5 0.2 0.1 0.05];
 dd=zeros(size(iAa,1),2);
