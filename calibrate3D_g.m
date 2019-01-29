@@ -279,7 +279,8 @@ for X=1:length(p.xrange)-1
             'Yrange',p.yrange([Y Y+1])+imageRoi(2),'posind',[X,Y],'EMon',p.emgain,'PSF',{PSF});
     end
 end
-
+axcrlb=axes(uitab(p.tabgroup,'Title','CRLB'));
+plotCRLBcsplinePSF(csplinecal.cspline,axcrlb)
     
 parameters=myrmfield(p,{'tabgroup','status','ax_z','ax_sxsy','fileax'});
     
