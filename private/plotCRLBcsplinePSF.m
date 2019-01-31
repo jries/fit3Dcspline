@@ -1,5 +1,5 @@
 function plotCRLBcsplinePSF(cspline,ax)
-rois=13;
+rois=size(cspline.coeff{1},1)-3;
 N=5000;bg=50;x=rois/2;y=rois/2;z=(1:size(cspline.coeff{1},3))';
 v1=ones(length(z),1);
 coords=[v1*x , v1*y , v1* N, v1*bg, z];
@@ -17,5 +17,5 @@ legend('x','y','z','location','north')
 title(ax,'localization precision for N=5000, bg=50')
 xlabel(ax,'z (nm)')
 ylabel(ax,'sqrt(CRLB) in nm')
-grid;set(gca, 'YLim', [3 20])
+% grid;set(gca, 'YLim', [3 20])
 end
