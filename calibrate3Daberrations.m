@@ -29,7 +29,7 @@ p.maxrange=800; %range around zero in which the correction is calcualted.
 
 p=copyfields(p,pin); %overwrite with passed on parameters
 
-f=figure('Name','Calibrate depht-induced aberrations');
+f=figure('Name','Calibrate depth-induced aberrations');
 p.tabgroup=uitabgroup(f);
 
 %get beads from localizations
@@ -95,6 +95,19 @@ while  1% length(beads2)>length(beads)/2
     err1=geterrors(beads2,ZcorrInterp);    
 end
 
+%take out beads for testing
+
+numtestbeads=15;
+f0=[beads2(:).f0];
+f0test=linspace(min(f0),max(f0),numtestbeads)
+for k=1:length(f0test)
+    [~,testind(k)]=min(abs(f0test(k)-f0));
+
+end
+% numtotal=length(beads2);
+% testind=round(numtotal*rand(numtestbeads,1));
+beadtest=beads2(testind);
+beads2(testind)=[];
 %plot output
 p.axhere=axes(uitab(p.tabgroup,'Title','Interpolation'));
 [ZcorrInterp]=getZinterp(beads2,ZcorrInterp,p);
@@ -123,6 +136,7 @@ ax2=axes(f,'Position',[0.5 0 1 1]);
 subplot(1,2,1,ax1);
 subplot(1,2,2,ax2);
 
+beads=beadtest;
 for k=length(beads):-1:1
    dZ=zcorr(beads(k).loc.zobjective,beads(k).loc.z);
    beads(k).loc.zcorrected=beads(k).loc.z+dZ;
@@ -134,15 +148,21 @@ for k=length(beads):-1:1
 %        hold(ax2,'on');
 %    end
 end
+length(beads2)
+color=jet(length(beads));
 for k=length(beads):-1:1
     if any(goodind==k)
-       plot(ax1,beads(k).loc.zobjectiverelative,beads(k).loc.z,'k.')
-       plot(ax2,beads(k).loc.zobjectiverelative,beads(k).loc.zcorrected,'k.')
+       goodz=abs(beads(k).loc.zobjectiverelative)<1000;
+       plot(ax1,-1.*beads(k).loc.zobjectiverelative(goodz),-1.*beads(k).loc.z(goodz),'.','Color',color(k,:))
+       plot(ax2,-1.*beads(k).loc.zobjectiverelative(goodz),-1.*beads(k).loc.zcorrected(goodz),'.','Color',color(k,:))
+      
        hold(ax1,'on');
        hold(ax2,'on');
+ 
     end
 end
-
+plot(ax1,[-1000 1000],[-1000 1000],'k')
+plot(ax2,[-1000 1000],[-1000 1000],'k')
 xlim(ax1,[-1000 1000]);
 ylim(ax1,[-1000 1000]);
 xlim(ax2,[-1000 1000]);
