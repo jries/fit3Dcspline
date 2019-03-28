@@ -30,6 +30,7 @@ classdef calibrate3D_GUI_g<handle
         guihandles
         smappos
         roimask
+        zernikeparameters
     end
     methods
         function obj=calibrate3D_GUI_g(varargin)  
@@ -52,15 +53,24 @@ classdef calibrate3D_GUI_g<handle
                 if exist('ImageJ/plugins/bioformats_package.jar','file')
                     javaaddpath('ImageJ/plugins/bioformats_package.jar')
                 end
+                pathprivate=[fileparts(pwd) filesep 'ries-private' filesep 'VectorPSF_Fit'];
+                if exist(pathprivate,'dir')
+                    addpath(pathprivate)
+                end
             end
+            obj.smappos.smappath=[fileparts(pwd) filesep 'SMAP'];
             
-            if nargin>0 %called from our propriety fitting software SMAP: extended funtionality. Hidden if called directly
-                extended=true;
-                figureheight=720;
-            else
-                extended=false;
-                figureheight=670;
-            end
+            
+%             
+%             if nargin>0 %called from our propriety fitting software SMAP: extended funtionality. Hidden if called directly
+%                 extended=true;
+%                 figureheight=720;
+%             else
+%                 extended=false;
+%                 figureheight=670;
+%             end
+            extended = true;
+            figureheight=720;
             
             h=figure('Name','3D calibration','MenuBar','none','ToolBar','none');
             initPosition = h.Position;
@@ -202,13 +212,17 @@ classdef calibrate3D_GUI_g<handle
                 obj.guihandles.spatial_yval=uicontrol('style','edit','String','','Position',[xpos1+3*xw,top-25*vsep,xw,fieldheight],'FontSize',fontsize,'HorizontalAlignment',ha,'Visible','off');   
                 obj.guihandles.spatial_getroi=uicontrol('style','pushbutton','String','get ROI','Position',[xpos1+2*xw,top-25*vsep,xw,fieldheight],'FontSize',fontsize,'HorizontalAlignment',ha,'Visible','off','Callback',@obj.selectroi_callback);   
                 obj.guihandles.spatial_roimode=uicontrol('style','popupmenu','String',{'elliptical','rectangular','free'},'Position',[xpos1,top-25*vsep,2*xw,fieldheight],'FontSize',fontsize,'HorizontalAlignment',ha,'Visible','off');   
-                
+%                 obj.guihandles.roi2c=uicontrol('style','checkbox','String','2 channel','Position',[xpos1+3*xw,top-25*vsep,xw,fieldheight],'FontSize',fontsize,'HorizontalAlignment',ha,'Visible','off');   
+                obj.guihandles.roi2c=uicontrol('style','popupmenu','String',{'single','up-down','up-down mirror','right-left','right-left mirror'},'Position',[xpos1+3*xw,top-25*vsep,xw,fieldheight],'FontSize',fontsize,'Visible','off');
+           
                 
                 obj.guihandles.setframes=uicontrol('style','checkbox','String','set frames','Position',[xpos1+2*xw,top-24*vsep,xw*1,fieldheight],'FontSize',fontsize,'HorizontalAlignment',ha,'Callback',@obj.setframes_callback);
                 obj.guihandles.framerange=uicontrol('style','edit','String','50 250','Position',[xpos1+3*xw,top-24*vsep,xw,fieldheight],'FontSize',fontsize,'Visible','off');
                 
+                obj.guihandles.zernikefit=uicontrol('style','checkbox','String','Fit Zernike coefficients','Position',[xpos1,top-26*vsep,xw*2,fieldheight],'FontSize',fontsize,'HorizontalAlignment',hatitle,'FontWeight','bold','Callback',@obj.zernike_callback,'Value',1);    
+                obj.guihandles.zernikepar=uicontrol('style','pushbutton','String','Parameters','Position',[xpos1+2*xw,top-26*vsep,xw*1,fieldheight],'FontSize',fontsize,'Callback',@obj.zernikepar_callback);    
                 
-                obj.guihandles.emgain=uicontrol('style','checkbox','String','EM gain used (mirrored)','Position',[xpos1,top-26*vsep,2*xw,fieldheight],'FontSize',fontsize,'HorizontalAlignment',ha); 
+                obj.guihandles.emgain=uicontrol('style','checkbox','String','EM gain used (mirrored)','Position',[xpos1,top-27*vsep,2*xw,fieldheight],'FontSize',fontsize,'HorizontalAlignment',ha); 
                 
 
             modality_callback(obj,0,0)
@@ -373,6 +387,8 @@ classdef calibrate3D_GUI_g<handle
             p.smappos=obj.smappos;
             img=readbeadimages(fl{1},p);
             imgmax=max(img,[],3);
+            qm=myquantile(imgmax(:),.999);
+            imgmax(imgmax>qm)=qm;
             f=figure(198);
             ax=gca;
             imagesc(imgmax);
@@ -387,7 +403,26 @@ classdef calibrate3D_GUI_g<handle
             end
             h=fun(ax);
             position=wait(h);
-            obj.roimask=createMask(h);
+            roimask=createMask(h);
+            splitpos=str2double(obj.guihandles.Tsplitpos.String);
+            switch obj.guihandles.roi2c.String{obj.guihandles.roi2c.Value}
+                case 'single'
+                    roimask2=roimask;
+                case 'up-down'
+                    roimask2=[roimask(splitpos+1:end,:); roimask(1:splitpos,:)];
+                case 'up-down mirror'
+                    roimask2=roimask(end:-1:1,:);
+                case 'right-left'
+                    roimask2=[roimask(:,splitpos+1:end) roimask(:,1:splitpos)];
+                case 'right-left mirror'
+                    roimask2=roimask(:,end:-1:1);
+            end
+            
+            obj.roimask=roimask | roimask2;
+%             imgmaxp=double(imgmax)+double(max(imgmax(:)))*(1-roimask);
+            imgmaxp=imgmax;
+            imgmaxp(~obj.roimask)=max(imgmax(:));
+           imagesc(imgmaxp)
         end
         function out=run_callback(obj,a,b)
             p.filelist=obj.guihandles.filelist.String;
@@ -496,6 +531,8 @@ classdef calibrate3D_GUI_g<handle
             p.Tsplitpos=str2num(obj.guihandles.Tsplitpos.String);
             p.settingsfile4pi=obj.guihandles.settingsfile4pi.String;
             
+            p.zernikefit=obj.zernikeparameters;
+            p.zernikefit.calculatezernike=obj.guihandles.zernikefit.Value;
 
             if strcmp(p.modality,'4Pi')
                 calibrate_4pi_v2(p);
@@ -524,6 +561,53 @@ classdef calibrate3D_GUI_g<handle
                 if strcmp(obj.guihandles.Tsplitpos.String,'1')
                     obj.guihandles.Tsplitpos.String='255';
                 end                
+            end
+        end
+        function zernike_callback(obj,a,b)
+            if obj.guihandles.zernikefit.Value
+                vis='on';
+            else
+                vis='off';
+            end
+            obj.guihandles.zernikepar.Visible=vis;
+        end
+        function zernikepar_callback(obj,a,b)
+            settingsfile=[obj.smappos.smappath filesep 'settings' filesep 'temp' filesep 'zernikepar.txt'];
+            paraFit.zemit0 = 500;                                               % reference emitter z position, nm, distance of molecule to coverslip
+            paraFit.objStage0 = 0;                                            %  nm, initial objStage0 position,relative to focus at coverslip
+            if isempty(obj.zernikeparameters)
+                if exist(settingsfile,'file')
+                    paraFit=readstruct(settingsfile);
+                else
+                    paraFit.NA = 1.43;                                                % numerical aperture of obj             
+                    paraFit.refmed = 1.33;                                            % refractive index of sample medium
+                    paraFit.refcov = 1.518;                                           % refractive index of converslip
+                    paraFit.refimm = 1.518;                                           % refractive index of immersion oil
+                    paraFit.lambda = 680;                                             % wavelength of emission
+
+                    paraFit. pixelSizeX = 117;                                        % nm, pixel size of the image
+                    paraFit. pixelSizeY = 127;                                        % nm, pixel size of the image
+                    paraFit.Npupil = 64;  
+                    paraFit.sharedIB=false;
+                    paraFit.fitaverageStack=false;
+                    paraFit.iterations=75;
+                end
+            else
+                paraFit=obj.zernikeparameters;
+            end
+            paraFit.sharedIB=logical(paraFit.sharedIB);
+            paraFit.fitaverageStack=logical(paraFit.fitaverageStack);
+            askfields={'NA','refmed','refcov','refimm','lambda','pixelSizeX','pixelSizeY','iterations','sharedIB','fitaverageStack'};
+            settings=copyfields([],paraFit,askfields);
+%             settings.Descriptio='Parameters for the Zernike fit of bead stacks';
+%             settings.title='Zernike fit';
+            [settings,button]=settingsdlg(settings);
+            if strcmp(button,'OK')
+                paraFit=copyfields(paraFit,settings,askfields);
+            end
+            obj.zernikeparameters=paraFit;
+            if exist(fileparts(settingsfile),'dir')
+                writestruct(settingsfile,paraFit);
             end
         end
     end
@@ -555,4 +639,5 @@ obj.guihandles.spatial_ytext.String=yt;obj.guihandles.spatial_ytext.Visible=ytv;
 obj.guihandles.spatial_xval.String=xv;obj.guihandles.spatial_xval.Visible=xvv;
 obj.guihandles.spatial_yval.String=yv;obj.guihandles.spatial_yval.Visible=yvv;
 obj.guihandles.spatial_getroi.Visible=pbv;obj.guihandles.spatial_roimode.Visible=pbv;
+obj.guihandles.roi2c.Visible=pbv;
 end
