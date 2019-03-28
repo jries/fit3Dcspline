@@ -47,9 +47,11 @@ t=tic;
 %             end
              [P,CRLB, LL] =mleFit_LM_global(fitstack,int32(sharedA),iterations,coeffh,single(dT),1,zst);
             zind=3;
+            photind=4;
         else
             [P,CRLB, LL] =mleFit_LM(fitstack,fitmode,iterations,coeffh,0,1,zst);
             zind=5;
+            photind=3;
         end
         
 
@@ -78,6 +80,8 @@ t=tic;
         posbeads.x(:,k)=(P(:,2)-dn);
         posbeads.y(:,k)=(P(:,1)-dn);
         posbeads.frame(:,k)=1:length(z);
+        posbeads.LL(:,k)=LL;
+        posbeads.phot(:,k)=P(:,photind);
 % 
 % plot(ax2,P(:,1),P(:,2),'.')
 % hold(ax2,'on')

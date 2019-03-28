@@ -277,11 +277,39 @@ for X=1:length(p.xrange)-1
         SXY(X,Y)=struct('gausscal',gausscal,'cspline_all',cspline_all,'gauss_sx2_sy2',gauss_sx2_sy2,'gauss_zfit',gauss_zfit,...
             'cspline',cspline,'Xrangeall',p.xrange+imageRoi(1),'Yrangeall',p.yrange+imageRoi(2),'Xrange',p.xrange([X X+1])+imageRoi(1),...
             'Yrange',p.yrange([Y Y+1])+imageRoi(2),'posind',[X,Y],'EMon',p.emgain,'PSF',{PSF});
+        if p.zernikefit.calculatezernike
+            axzernike=axes(uitab(p.tabgroup,'Title','Zernikefit'));
+            %trim stack to size giben by cspline parameters and frame
+            %range.
+            if p.zernikefit.fitaverageStack
+            stack=csplinecal.PSF{1}; %this would be the average... not sure if good.
+            mp=ceil(size(stack,1)/2);
+            rxy=floor(p.ROIxy/2);
+            zborder=round(100/p.dz); %from alignment: outside is bad.
+            stack=stack(mp-rxy:mp+rxy,mp-rxy:mp+rxy,zborder+1:end-zborder);
+            %fitter expects photons. Add BG here? normalization? Here it is
+            %arbitrary
+            stack=stack*1000; %random photons, before normalized to maximum pixel
+            else
+                 zborder=round(100/p.dz); %from alignment: outside is bad.
+                ll=beadpos{X,Y}.LL;
+                llm=mean(ll(zborder+1:end-zborder,:),1);
+                [~,ind]=max(llm);
+                goodb=find(indgoods&indgoodc);
+                 stack=single(beadsh(goodb(ind)).stack.image); %later: take best bead (closest to average)
+                mp=ceil(size(stack,1)/2);
+                rxy=floor(p.ROIxy/2);
+               
+                stack=stack(mp-rxy:mp+rxy,mp-rxy:mp+rxy,zborder+1:end-zborder);
+            end
+            p.zernikefit.dz=p.dz;
+            SXY(X,Y).zernikefit=zernikefitBeadstack(stack,p.zernikefit,axzernike);
+        end
     end
 end
 axcrlb=axes(uitab(p.tabgroup,'Title','CRLB'));
 plotCRLBcsplinePSF(csplinecal.cspline,axcrlb)
-    
+
 parameters=myrmfield(p,{'tabgroup','status','ax_z','ax_sxsy','fileax'});
     
 p.status.String='save calibration';drawnow
