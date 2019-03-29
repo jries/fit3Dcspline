@@ -214,7 +214,7 @@ for X=1:length(p.xrange)-1
 
         % get cspline calibration
         p.status.String='get cspline calibration';drawnow
-        [csplinecal,indgoods,beadpos{X,Y}]=getstackcal_g(beadsh(indgoodc),p);
+        [csplinecal,indgoods,beadpos{X,Y},~,testallrois]=getstackcal_g(beadsh(indgoodc),p);
         
         for f=1:max(beadpos{X,Y}.filenumber(:))
             indfile=(beadpos{X,Y}.filenumber==f);
@@ -277,6 +277,7 @@ for X=1:length(p.xrange)-1
         SXY(X,Y)=struct('gausscal',gausscal,'cspline_all',cspline_all,'gauss_sx2_sy2',gauss_sx2_sy2,'gauss_zfit',gauss_zfit,...
             'cspline',cspline,'Xrangeall',p.xrange+imageRoi(1),'Yrangeall',p.yrange+imageRoi(2),'Xrange',p.xrange([X X+1])+imageRoi(1),...
             'Yrange',p.yrange([Y Y+1])+imageRoi(2),'posind',[X,Y],'EMon',p.emgain,'PSF',{PSF});
+        % ZERNIKE fitting
         if p.zernikefit.calculatezernike
             axzernike=axes(uitab(p.tabgroup,'Title','Zernikefit'));
             %trim stack to size giben by cspline parameters and frame
@@ -303,7 +304,12 @@ for X=1:length(p.xrange)-1
                 stack=stack(mp-rxy:mp+rxy,mp-rxy:mp+rxy,zborder+1:end-zborder);
             end
             p.zernikefit.dz=p.dz;
-            SXY(X,Y).zernikefit=zernikefitBeadstack(stack,p.zernikefit,axzernike);
+            [SXY(X,Y).zernikefit,PSFZernike]=zernikefitBeadstack(stack,p.zernikefit,axzernike);
+            coeffZ=Spline3D_interp(PSFZernike);
+            axzernikef=axes(uitab(p.tabgroup,'Title','Zval'));
+            p.z0=size(coeffZ,3)/2;
+             posbeads=testfit_spline(testallrois,{coeffZ},0,p,{},axzernikef);
+             vectorPSF2cspline(300,SXY(X,Y).zernikefit,p)
         end
     end
 end
