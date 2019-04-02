@@ -309,7 +309,7 @@ for X=1:length(p.xrange)-1
             axzernikef=axes(uitab(p.tabgroup,'Title','Zval'));
             p.z0=size(coeffZ,3)/2;
              posbeads=testfit_spline(testallrois,{coeffZ},0,p,{},axzernikef);
-             vectorPSF2cspline(300,SXY(X,Y).zernikefit,p)
+%              vectorPSF2cspline(300,SXY(X,Y).zernikefit,p)
         end
     end
 end
