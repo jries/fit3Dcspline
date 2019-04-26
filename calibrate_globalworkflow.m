@@ -192,19 +192,17 @@ switch p.Tmode
         pr.xrangeall=p.xrange; pr.yrangeall=p.yrange;
         pr.XYpos=[1,1];
         pr.split ='none';
-%         if max(p.xrange)<splitpos %defined only in upper part
-%             xrange1=p.xrange;
-%             xrange2=p.xrange+splitpos;xrange2(xrange2<splitpos)=splitpos;
-%         else
-%             xrange1=([p.xrange splitpos]);xrange1(xrange1>splitpos)=splitpos;xrange1=unique(xrange1);
-%             xrange2=([p.xrange+ splitpos]);xrange2(xrange2<splitpos)=splitpos;xrange2=unique(xrange2);
-%         end
-%         yrange1=p.yrange;yrange2=p.yrange;
-%         yrangeall=p.yrange;
-%         xrangeall=[xrange1(1:end-1) splitpos xrange2(2:end)];
-%         XYpos=[2,1];
-%         split='rl';
 end
+%test: exchange channels
+if p.switchchannels
+xr1temp=pr.xrange1; 
+pr.xrange1=pr.xrange2;
+pr.xrange2=xr1temp;
+yr1temp=pr.yrange1; 
+pr.yrange1=pr.yrange2;
+pr.yrange2=yr1temp;
+end
+
 end
 
 % 
