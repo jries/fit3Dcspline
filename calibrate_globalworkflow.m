@@ -130,6 +130,7 @@ if  ~isfield(p,'xrange')
     p.xrange=[-inf inf];
 end
 
+pr.mirror=contains(p.Tmode,'mirror');
 switch p.Tmode
     case {'up-down','up-down mirror'}
         splitpos=p.Tsplitpos(1);
@@ -218,12 +219,16 @@ pt.yrange=pp.yrange1;
 pt.unit='pixel';
 pt.type='projective';
 transform.setTransform(1,pt)
+pt.mirror=0;
+
+if pp.mirror
 if contains(pp.split,'rl')
     pt.mirror= 1;
 elseif contains(pp.split,'ud')
     pt.mirror= 2;
 else
     pt.mirror=0;
+end
 end
 pt.xrange=pp.xrange2;
 pt.yrange=pp.yrange2;
