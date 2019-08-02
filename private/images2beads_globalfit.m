@@ -4,7 +4,7 @@ fs=p.filtersize;
 h=fspecial('gaussian',2*round(fs*3/2)+1,fs);
 fmax=0;
 roisize=p.ROIxy;
-roisizeh=round(1.5*(p.ROIxy-1)/2); %create extra space if we need to shift;
+roisizeh=min(round(1.5*(p.ROIxy-1)/2), round((p.ROIxy-1)/2)+3); %create extra space if we need to shift;
 rsr=-roisizeh:roisizeh;
 filelist=p.filelist;
 b=[];
@@ -44,6 +44,11 @@ for k=1:length(filelist)
         p.roi2=p.roi;
         imstack2=imstack;
     end
+    %correct roi size if image too small
+    sim=size(imstack);
+    roisizeh=min(round((min(sim(1:2))-1)/2)-1,roisizeh);
+    rsr=-roisizeh:roisizeh;
+    
 %     size(imstack)
     if is4pi
         if ~isempty(settings3D)
