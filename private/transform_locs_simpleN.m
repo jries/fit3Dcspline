@@ -3,7 +3,7 @@ function [transform,iAa,iBa]=transform_locs_simpleN(transform,channelref,locref,
 if isfield(p,'sepscale')
     sepscale=p.sepscale;
 else
-sepscale=2;
+sepscale=3;
 end
 
 
@@ -58,7 +58,7 @@ end
 
 locRh.x=locR(:,1);locRh.y=locR(:,2);
 locTh.x=locT(:,1);locTh.y=locT(:,2);
-if ndims(locref)>3
+if size(locref,2)>3
     locRh.frame=locref(:,4);
     locTh.frame=loctarget(:,4);
 else
@@ -67,7 +67,7 @@ locTh.frame=ones(size(locTh.x));
 end
 [iAa,iBa,na,nb,nseen]=matchlocsall(locRh,locTh,-dx0,-dy0,4*sepscale,1e5);
 
-cutofffactor=[1 0.5 0.2 0.1 0.05];
+cutofffactor=[1 0.5 0.2 0.1 0.05 0.03];
 dd=zeros(size(iAa,1),2);
 
 for k=1:length(cutofffactor)

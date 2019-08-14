@@ -20,6 +20,9 @@ pixelsize=100;
              r=imageloaderAll(file,[],p.smappos.P);
 
              imstack=r.getmanyimages(1:r.metadata.numberOfFrames,'mat');
+             if size(imstack,3)<=1 %only one frame read
+                 error('only one frame found')
+             end
              imstack=imstack-r.metadata.offset;
              roi=r.metadata.roi;
              pixelsize=r.metadata.cam_pixelsize_um;

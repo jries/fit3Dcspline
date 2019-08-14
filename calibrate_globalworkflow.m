@@ -130,6 +130,7 @@ if  ~isfield(p,'xrange')
     p.xrange=[-inf inf];
 end
 
+pr.mirror=contains(p.Tmode,'mirror');
 switch p.Tmode
     case {'up-down','up-down mirror'}
         splitpos=p.Tsplitpos(1);
@@ -192,19 +193,17 @@ switch p.Tmode
         pr.xrangeall=p.xrange; pr.yrangeall=p.yrange;
         pr.XYpos=[1,1];
         pr.split ='none';
-%         if max(p.xrange)<splitpos %defined only in upper part
-%             xrange1=p.xrange;
-%             xrange2=p.xrange+splitpos;xrange2(xrange2<splitpos)=splitpos;
-%         else
-%             xrange1=([p.xrange splitpos]);xrange1(xrange1>splitpos)=splitpos;xrange1=unique(xrange1);
-%             xrange2=([p.xrange+ splitpos]);xrange2(xrange2<splitpos)=splitpos;xrange2=unique(xrange2);
-%         end
-%         yrange1=p.yrange;yrange2=p.yrange;
-%         yrangeall=p.yrange;
-%         xrangeall=[xrange1(1:end-1) splitpos xrange2(2:end)];
-%         XYpos=[2,1];
-%         split='rl';
 end
+%test: exchange channels
+if p.switchchannels
+xr1temp=pr.xrange1; 
+pr.xrange1=pr.xrange2;
+pr.xrange2=xr1temp;
+yr1temp=pr.yrange1; 
+pr.yrange1=pr.yrange2;
+pr.yrange2=yr1temp;
+end
+
 end
 
 % 
@@ -218,12 +217,16 @@ pt.yrange=pp.yrange1;
 pt.unit='pixel';
 pt.type='projective';
 transform.setTransform(1,pt)
+pt.mirror=0;
+
+if pp.mirror
 if contains(pp.split,'rl')
     pt.mirror= 1;
 elseif contains(pp.split,'ud')
     pt.mirror= 2;
 else
     pt.mirror=0;
+end
 end
 pt.xrange=pp.xrange2;
 pt.yrange=pp.yrange2;
@@ -241,7 +244,7 @@ bc2=horzcat(reshape(bead2.x(range,:),[],1),...
     reshape(bead2.y(range,:),[],1),...
     reshape(bead2.z(range,:),[],1),...
     reshape(bead2.filenumber(range,:)*100+bead2.frame(range,:),[],1));
-
+ph.sepscale=5;
 [transform ,iAa,iBa]=transform_locs_simpleN(transform,1, bc1,2,bc2,ph); 
 
 end
