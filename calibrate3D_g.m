@@ -280,6 +280,8 @@ for X=1:length(p.xrange)-1
         % ZERNIKE fitting
         if p.zernikefit.calculatezernike
             axzernike=axes(uitab(p.tabgroup,'Title','Zernikefit'));
+            axPupil=axes(uitab(p.tabgroup,'Title','Pupil'));
+            axMode=axes(uitab(p.tabgroup,'Title','ZernikeModel'));
             %trim stack to size giben by cspline parameters and frame
             %range.
             if p.zernikefit.fitaverageStack
@@ -304,7 +306,7 @@ for X=1:length(p.xrange)-1
                 stack=stack(mp-rxy:mp+rxy,mp-rxy:mp+rxy,zborder+1:end-zborder);
             end
             p.zernikefit.dz=p.dz;
-            [SXY(X,Y).zernikefit,PSFZernike]=zernikefitBeadstack(stack,p.zernikefit,axzernike);
+            [SXY(X,Y).zernikefit,PSFZernike]=zernikefitBeadstack(stack,p.zernikefit,axzernike,axPupil,axMode);
             coeffZ=Spline3D_interp(PSFZernike);
             axzernikef=axes(uitab(p.tabgroup,'Title','Zval'));
             p.z0=size(coeffZ,3)/2;

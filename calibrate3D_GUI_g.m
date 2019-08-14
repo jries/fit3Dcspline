@@ -573,7 +573,7 @@ classdef calibrate3D_GUI_g<handle
         end
         function zernikepar_callback(obj,a,b)
             settingsfile=[obj.smappos.smappath filesep 'settings' filesep 'temp' filesep 'zernikepar.txt'];
-            paraFit.zemit0 = 500;                                               % reference emitter z position, nm, distance of molecule to coverslip
+            paraFit.zemit0 = 50;                                               % reference emitter z position, nm, distance of molecule to coverslip
             paraFit.objStage0 = 0;                                            %  nm, initial objStage0 position,relative to focus at coverslip
             if isempty(obj.zernikeparameters)
                 if exist(settingsfile,'file')
