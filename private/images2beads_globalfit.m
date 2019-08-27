@@ -1,7 +1,7 @@
 function [b,p]=images2beads_globalfit(p)
 % addpath('bfmatlab')
 fs=p.filtersize;
-h=fspecial('gaussian',2*round(fs*3/2)+1,fs);
+hfilterim=fspecial('gaussian',2*round(fs*3/2)+1,fs);
 fmax=0;
 roisize=p.ROIxy;
 roisizeh=round(1.5*(p.ROIxy-1)/2); %create extra space if we need to shift;
@@ -77,7 +77,7 @@ for k=1:length(filelist)
     mim=max(imstack,[],3);
 
 %     mim=mean(imstack,3);
-    mim=filter2(h,mim);
+    mim=filter2(hfilterim,mim);
     imagesc(ax,mim);
     axis(ax,'image');
     axis(ax,'off')
@@ -133,9 +133,9 @@ for k=1:length(filelist)
            xm(xm>w/2)=xm(xm>w/2)-w;
            indgoodb(abs(xm)<p.mindistance/2)=false;
        end
-       h=size(imstack,1);
+       hs=size(imstack,1);
        ym=maxima(:,2);
-       ym(ym>h/2)=ym(ym>h/2)-h;
+       ym(ym>hs/2)=ym(ym>hs/2)-hs;
        indgoodb(abs(ym)<p.mindistance/2)=false;
 %         maxima=maxima(indgoodb,:);
          maxima=maxima(indgoodb,:);
