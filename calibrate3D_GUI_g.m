@@ -538,7 +538,7 @@ classdef calibrate3D_GUI_g<handle
             p.switchchannels=contains(obj.guihandles.mainchannel.String{obj.guihandles.mainchannel.Value},'d');
 
             if strcmp(p.modality,'4Pi')
-                calibrate_4pi_v2(p);
+                calibrate_4pi_v3(p);
             else
             
                 calibrate_globalworkflow(p);

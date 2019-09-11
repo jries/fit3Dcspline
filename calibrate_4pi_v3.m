@@ -1,4 +1,4 @@
-function calibrate_4pi_v2(p)
+function calibrate_4pi_v3(p)
 %add directory with fitter to path
 fit4pidir=strrep(pwd,'SMAP',['ries-private' filesep 'PSF4Pi']);
 if exist(fit4pidir,'file')
@@ -12,25 +12,15 @@ tgprefit=uitabgroup(t1);
 ph.tabgroup= tgprefit;
 ph.outputfile={};
 % ph.normalize=false;
+l=load(p.Tfile);
 
-% get parameters for cutting out and mirroring raw image files
-if ~isempty(p.settingsfile4pi) && exist(p.settingsfile4pi,'file')
-    settings_3D=readstruct(p.settingsfile4pi); %later to settings, specify path in gui  
-    settings_3D.file=p.settingsfile4pi;
-    ph.settings_3D=settings_3D;
-end
+ph.settings_3D=l.parameters.settings3D;
+ph.transformation=l.transform;
 
 ph.zstart= [ -1 0 1 ]*22; 
-% ph.zstart=0;
+
 %segment beads
  p.status.String=['load files'];drawnow
- ph.isglobalfit=false; %segment all beads together
-[beads,ph]=images2beads_globalfitN(ph); 
-
-beadtrue=getbeadcoord(beads,ph);
-ph.sepscale=5;
-transformation1=make4PiTransform(beadtrue,ph);
-ph.transformation=transformation1;
 
 t1=uitab(tg,'Title','single bead');
 tgprefit=uitabgroup(t1);
