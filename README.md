@@ -1,3 +1,8 @@
+# Important: fit3Dcspline has been fully integrated in [SMAP](https://github.com/jries/SMAP) and is now archived. Clone SMAP to have access to fit3Dcspline. 
+
+
+
+
 # fit3Dcspline
 fit3Dcspline is a GPU based 3D single molecule fitter for arbitrary, experimental 
 point spread functions (PSF). The fitting speeds achieves more than 10^5 fits/s on a 
